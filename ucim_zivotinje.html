@@ -564,13 +564,13 @@
     </div>
     <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
         <button class="home-start-btn" id="homeStartBtn" onclick="startGame()">▶️ Start</button>
-        <button class="home-reset-btn" id="homeResetBtn" onclick="resetProgress()" style="display:none;">🔄 Resetuj</button>
+        <button class="home-reset-btn" id="homeResetBtn" onclick="resetProgress()" style="display:none;">🔄 Reset</button>
     </div>
 </div>
 
 <div id="gameContent" style="display:none;">
 <header>
-    <h1>🐾 Učim životinje</h1>
+    <h1 role="button" tabindex="0" title="Povratak na početnu stranicu" onclick="goHome()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goHome();}" style="cursor:pointer">🐾 Učim životinje</h1>
     <div class="star-counter" id="starCounter">⭐ <span id="starCount">0</span></div>
     <div class="header-right">
         <div class="lang-toggle">
@@ -632,7 +632,7 @@
     <h3>💾 Upravljanje progresom</h3>
     <div style="text-align: center; margin-top: 12px;">
         <button class="test-voice-btn" style="background: linear-gradient(135deg, #ff6b9d, #ee5a6f); box-shadow: 0 4px 0 #c92a2a;" onclick="resetProgress()">
-            🔄 Resetuj sav progres
+            🔄 Reset sav progres
         </button>
         <p style="font-size: 0.85rem; color: #888; margin-top: 8px;">
             Obriši sve zvjezdice i vrati igru na početak
@@ -670,7 +670,7 @@ const ANIMALS_LEVEL1 = [
     { hr:'mačka', en:'cat',    img:'images/cat.jpg',  alts_hr:['maca','macica','mačke','mački','mačku','maka','macka','mjau'],      alts_en:['kitty','kitten','pussy','meow'], level:1 },
     { hr:'riba',  en:'fish',   img:'images/fish.jpg',  alts_hr:['ribu','ribi','ribica','ribče','ribe'],                       alts_en:['fishy','fishes'], level:1 },
     { hr:'ptica', en:'bird',   img:'images/bird.jpg',  alts_hr:['pticu','ptici','ptičica','ptico','ptic','ptica','птица','птичица'],     alts_en:['birdie','birdy','tweet'], level:1 },
-    { hr:'krava', en:'cow',    img:'images/cow.jpeg',  alts_hr:['kravu','kravi','kravice','kravica','mu', 'kava'],                    alts_en:['cattle','bull','calf','moo'], level:1 },
+    { hr:'krava', en:'cow',    img:'images/cow.jpg',  alts_hr:['kravu','kravi','kravice','kravica','mu', 'kava'],                    alts_en:['cattle','bull','calf','moo'], level:1 },
     { hr:'svinja', en:'pig',   img:'images/pig.jpg',  alts_hr:['svinju','svinji','prasac','prase','praščić','rok rok','oink'],     alts_en:['piggy','piglet','hog','swine','oink'], level:1 },
     { hr:'kokoš', en:'chicken', img:'images/chicken.jpg',  alts_hr:['kokoši','kokošku','kokica','pile','piletina','kok kok','ko ko'],     alts_en:['hen','chick','rooster','cluck'], level:1 }
 ];
@@ -684,14 +684,16 @@ const ANIMALS_LEVEL2 = [
     { hr:'leptir', en:'butterfly', img:'images/butterfly.jpg',  alts_hr:['leptira','leptiru','leptirić','leptir','leptiric'],     alts_en:['butterflies','moth'], level:2 }
 ];
 
-// Level 3 - Teško: egzotične/divlje životinje (6 komada)
+// Level 3 - Teško: egzotične/divlje životinje (8 komada)
 const ANIMALS_LEVEL3 = [
     { hr:'lav',   en:'lion',   img:'images/lion.jpg',  alts_hr:['lava','lavu','lavica','lavić','rey','rawr'],     alts_en:['lioness','cub','roar'], level:3 },
     { hr:'slon',  en:'elephant', img:'images/elephant.jpg',  alts_hr:['slona','slonu','slonić','slonica','slonje'],     alts_en:['elephants','jumbo','dumbo','ellie'], level:3 },
     { hr:'medvjed', en:'bear',  img:'images/bear.jpg',  alts_hr:['medvjeda','medvjedu','medo','medica','medu','medvjedić'],     alts_en:['teddy','grizzly','cub','teddy bear'], level:3 },
     { hr:'majmun', en:'monkey', img:'images/monkey.jpg',  alts_hr:['majmuna','majmunu','majmunčić','opica','šimpanza','ih ih ah ah'],     alts_en:['ape','chimp','gorilla','baboon'], level:3 },
     { hr:'žirafa', en:'giraffe', img:'images/giraffe.jpg',  alts_hr:['žirafu','žirafi','žirafić','girafa','dzirafa'],     alts_en:['baby giraffe'], level:3 },
-    { hr:'dupin',  en:'dolphin', img:'images/dolphin.jpg',  alts_hr:['dupina','dupinu','dupinčić','delfin','delfina'],     alts_en:['dolphins','flipper','porpoise'], level:3 }
+    { hr:'dupin',  en:'dolphin', img:'images/dolphin.jpg',  alts_hr:['dupina','dupinu','dupinčić','delfin','delfina'],     alts_en:['dolphins','flipper','porpoise'], level:3 },
+    { hr:'vuk', en:'wolf', img:'images/woolf.jpg', alts_hr:['vuka','vuku','vuče','vučić','vučića','vučica','vučicu','vukovi'], alts_en:['wolves','wolf cub','wolf pup'], level:3 },
+    { hr:'zebra', en:'zebra', img:'images/zebra.jpg', alts_hr:['zebru','zebri','zebrice','zebrica'], alts_en:['zebras'], level:3 }
 ];
 
 let ANIMALS = ANIMALS_LEVEL1; // Početno level 1
@@ -807,7 +809,7 @@ function loadProgress() {
 }
 
 function resetProgress() {
-    if (confirm('Jeste li sigurni da želite resetovati sav progres? Izgubit ćete sve zvjezdice i napredak!')) {
+    if (confirm('Jeste li sigurni da želite resetirati sav progres? Izgubit ćete sve zvjezdice i napredak!')) {
         localStorage.removeItem('ucilica_progress');
         location.reload(); // Osvježi stranicu
     }
@@ -1633,6 +1635,20 @@ function checkProgress() {
 
 // Pozovi pri učitavanju stranice
 checkProgress();
+
+// Povratak na početnu stranicu s uputama
+function goHome() {
+    stopListen();
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+    }
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    document.getElementById('settingsPanel').classList.remove('open');
+    document.getElementById('gameContent').style.display = 'none';
+    document.getElementById('homeScreen').style.display = '';
+    checkProgress();
+}
 
 // Igra kreće tek nakon klika na "Start" na početnom ekranu
 function unlockAudio() {
