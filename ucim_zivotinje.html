@@ -72,6 +72,30 @@
             transition: transform 0.2s;
         }
         .star-counter.pop { animation: starPop 0.5s ease; }
+        .star-award-message {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 8px auto 0;
+            padding: 8px 18px;
+            border: 3px solid #f0b400;
+            border-radius: 24px;
+            background: linear-gradient(135deg, #fff3a3, #ffd43b);
+            color: #7a4b00;
+            font-family: 'Baloo 2', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+            box-shadow: 0 4px 0 #e0a800, 0 0 18px rgba(255, 212, 59, .65);
+            opacity: 0;
+            transform: scale(.6);
+            pointer-events: none;
+        }
+        .star-award-message.show { animation: awardMessageIn 2.3s ease forwards; }
+        @keyframes awardMessageIn {
+            0% { opacity: 0; transform: scale(.6) translateY(12px); }
+            15%, 78% { opacity: 1; transform: scale(1) translateY(0); }
+            100% { opacity: 0; transform: scale(.9) translateY(-8px); }
+        }
         @keyframes starPop {
             0%   { transform: scale(1); }
             40%  { transform: scale(1.35) rotate(-8deg); }
@@ -182,6 +206,32 @@
             color: #7c6fa8;
             margin-bottom: 10px;
             font-weight: 600;
+        }
+        .animal-position {
+            width: 100%;
+            max-width: 420px;
+            margin: 0 auto 12px;
+            padding: 8px 14px;
+            border-radius: 16px;
+            background: #f3f0ff;
+            color: #5f3dc4;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        .animal-position-track {
+            height: 8px;
+            margin-top: 6px;
+            overflow: hidden;
+            border-radius: 8px;
+            background: #ded8f7;
+        }
+        .animal-position-fill {
+            width: 0;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #9775fa, #5f3dc4);
+            transition: width .35s ease;
         }
 
         /* Settings panel */
@@ -644,6 +694,10 @@
 <div class="card">
     <img class="animal-display" id="animalDisplay" src="images/dog.jpg" alt="Životinja">
 
+    <div class="animal-position" id="animalPosition" aria-live="polite">
+        <span id="animalPositionText"></span>
+        <div class="animal-position-track" aria-hidden="true"><div class="animal-position-fill" id="animalPositionFill"></div></div>
+    </div>
     <div class="question" id="questionText">Koja je ovo životinja?</div>
     <button class="speak-btn" id="speakBtn" onclick="speakQuestion()">🔊 Ponovi pitanje</button>
 
@@ -654,6 +708,7 @@
 
     <div class="feedback" id="feedback"></div>
     <div class="result-label" id="resultLabel"></div>
+    <div class="star-award-message" id="starAwardMessage" aria-live="polite"></div>
     <div class="answer-reveal" id="answerReveal"></div>
 
     <div class="stars-row" id="starsRow"></div>
@@ -1064,9 +1119,9 @@ function unlockLevel2() {
     btn2.classList.remove('locked');
     btn2.textContent = lang === 'hr' ? '⭐⭐ Level 2 - Srednje' : '⭐⭐ Level 2 - Medium';
     
-    // Prikaži poruku za završetak Level 1
-    const msg1 = lang === 'hr' ? '🎉 Level 1 RIJEŠEN!' : '🎉 Level 1 COMPLETED!';
-    const msg2 = lang === 'hr' ? 'Klikni na Level 2 da kreneš s težim životinjama!' : 'Click Level 2 to start harder animals!';
+    // Prikaži završetak Levela 1 i najavi automatski početak Levela 2.
+    const msg1 = lang === 'hr' ? '🎉 Sve životinje iz Levela 1 su riješene!' : '🎉 All Level 1 animals are complete!';
+    const msg2 = lang === 'hr' ? 'Krećemo na Level 2!' : 'Starting Level 2!';
     
     document.getElementById('animalDisplay').src = ''; // Ukloni sliku
     document.getElementById('feedback').textContent = '🎉';
@@ -1081,6 +1136,7 @@ function unlockLevel2() {
     
     updateLevelProgress();
     say(msg1 + '. ' + msg2);
+    setTimeout(() => setLevel(2), 3000);
 }
 
 function unlockLevel3() {
@@ -1438,7 +1494,7 @@ function onHeard(heardList) {
         
         // Automatski učitaj sljedeću životnju nakon 2.5 sekunde
         setTimeout(() => {
-            if (!level1Complete && !level2Complete) {
+            if (!level1Complete && !level2Complete && !level3Complete) {
                 nextAnimal();
             }
         }, 2500);
@@ -1463,7 +1519,7 @@ function onHeard(heardList) {
             
             // Automatski učitaj sljedeću životnju nakon 3 sekunde
             setTimeout(() => {
-                if (!level1Complete && !level2Complete) {
+                if (!level1Complete && !level2Complete && !level3Complete) {
                     nextAnimal();
                 }
             }, 3000);
@@ -1487,31 +1543,66 @@ function onHeard(heardList) {
 }
 
 // ─── Sljedeća životinja ───────────────────────────────────────────────────────
-function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+function shuffle(arr) {
+    const shuffled = [...arr];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
+
+function updateAnimalPosition() {
+    const totalInLevel = ANIMALS.length;
+    const positionText = document.getElementById('animalPositionText');
+    const positionFill = document.getElementById('animalPositionFill');
+    if (!positionText || !positionFill) return;
+
+    const currentPosition = Math.min(qi, queue.length);
+    const progressPercent = queue.length ? (currentPosition / queue.length) * 100 : 0;
+    positionFill.style.width = `${progressPercent}%`;
+    positionText.textContent = isRetryMode
+        ? (lang === 'hr'
+            ? `Ponavljanje ${currentPosition} od ${queue.length} · Level ${currentLevel}: ukupno ${totalInLevel}`
+            : `Review ${currentPosition} of ${queue.length} · Level ${currentLevel}: ${totalInLevel} total`)
+        : (lang === 'hr'
+            ? `Životinja ${currentPosition} od ${totalInLevel} · Level ${currentLevel}`
+            : `Animal ${currentPosition} of ${totalInLevel} · Level ${currentLevel}`);
+}
 
 function nextAnimal() {
-    // Ako je Level 1 ili Level 2 kompletan, ne idemo dalje
-    if (level1Complete || level2Complete) return;
-    
-    // Provjeri da li smo završili kružu i trebamo ponavljanje
+    // Zaustavi se nakon završetka levela.
+    if (level1Complete || level2Complete || level3Complete) return;
+
+    // Svaka životinja se prikazuje jednom u glavnom krugu. Nakon toga ponavljaju
+    // se samo životinje koje još nisu točno odgovorene.
     if (qi >= queue.length) {
         if (mistakeAnimals.length > 0 && !isRetryMode) {
-            // Kreni sa modusom ponavljanja sa samo životnjama sa greškama
             startRetryMode();
             return;
-        } else if (isRetryMode && mistakeAnimals.length === 0) {
-            // Sve naučeno! Kreni opet
-            isRetryMode = false;
-            queue = shuffle(ANIMALS);
+        }
+        if (isRetryMode && mistakeAnimals.length > 0) {
+            queue = shuffle(mistakeAnimals);
             qi = 0;
         } else {
-            // Normalno ponavljanje
-            queue = shuffle(ANIMALS);
-            qi = 0;
+            if (currentLevel === 1 && level1Solved.size >= ANIMALS_LEVEL1.length) {
+                unlockLevel2();
+            } else if (currentLevel === 2 && level2Solved.size >= ANIMALS_LEVEL2.length) {
+                completeLevel2();
+            } else if (currentLevel === 3 && level3Solved.size >= ANIMALS_LEVEL3.length) {
+                completeLevel3();
+            } else {
+                document.getElementById('micBtn').disabled = true;
+                document.getElementById('statusText').textContent = lang === 'hr'
+                    ? `🎉 Level ${currentLevel} je riješen!`
+                    : `🎉 Level ${currentLevel} is complete!`;
+            }
+            return;
         }
     }
-    
+
     animal   = queue[qi++];
+    updateAnimalPosition();
     attempts = 0;
     answered = false;
 
@@ -1560,6 +1651,13 @@ function startRetryMode() {
 function awardStar() {
     starCount++;
 
+    // Jasno prikaži osvajanje zvjezdice u kartici igre.
+    const awardMessage = document.getElementById('starAwardMessage');
+    awardMessage.textContent = lang === 'hr' ? '⭐ Zvjezdica osvojena! ⭐' : '⭐ Star earned! ⭐';
+    awardMessage.classList.remove('show');
+    void awardMessage.offsetWidth;
+    awardMessage.classList.add('show');
+
     // Leteća zvjezdica od feedback ikone prema brojaču u headeru
     const feedbackEl = document.getElementById('feedback');
     const counterEl  = document.getElementById('starCounter');
@@ -1576,13 +1674,11 @@ function awardStar() {
     document.body.appendChild(star);
     setTimeout(() => star.remove(), 950);
 
-    // Ažuriraj brojač nakon što zvjezdica "stigne"
-    setTimeout(() => {
-        document.getElementById('starCount').textContent = starCount;
-        counterEl.classList.remove('pop');
-        void counterEl.offsetWidth; // restart animacije
-        counterEl.classList.add('pop');
-    }, 850);
+    // Ažuriraj brojač odmah i naglasi dodanu zvjezdicu.
+    document.getElementById('starCount').textContent = starCount;
+    counterEl.classList.remove('pop');
+    void counterEl.offsetWidth; // restart animacije
+    counterEl.classList.add('pop');
 
     // Dodaj zvjezdicu u red ispod bodova
     const row = document.getElementById('starsRow');
