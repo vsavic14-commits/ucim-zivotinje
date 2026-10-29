@@ -873,7 +873,11 @@ function getAudioContext() {
 
 function applyChildVoiceFilter(audio) {
     const ctx = getAudioContext();
-    if (!ctx) return; // Ako nema Web Audio API, samo pusti kao normalno
+    if (!ctx) return;
+    if (ctx.state !== 'running') {
+        ctx.resume();
+        return;
+    }
     
     try {
         const source = ctx.createMediaElementAudioSource(audio);
@@ -1278,11 +1282,14 @@ function initRecognition() {
 
 // ─── Mikrofon ─────────────────────────────────────────────────────────────────
 function toggleListen() {
-    if (!recognition || answered) return;
+    if (answered) return;
     listening ? stopListen() : startListen();
 }
 function startListen() {
-    if (!recognition || listening || answered) return;
+    if (listening || answered) return;
+    if (!recognition) initRecognition();
+    if (!recognition) return;
+    recognition.lang = lang === 'hr' ? 'hr-HR' : 'en-US';
     listening = true;
     document.getElementById('micBtn').classList.add('listening');
     document.getElementById('statusText').textContent = T[lang].listening;
@@ -1628,7 +1635,28 @@ function checkProgress() {
 checkProgress();
 
 // Igra kreće tek nakon klika na "Start" na početnom ekranu
+function unlockAudio() {
+    try {
+        if (window.speechSynthesis) {
+            const u = new SpeechSynthesisUtterance(' ');
+            u.volume = 0;
+            window.speechSynthesis.speak(u);
+        }
+    } catch(e) {}
+    try {
+        const ctx = getAudioContext();
+        if (ctx && ctx.state === 'suspended') ctx.resume();
+    } catch(e) {}
+    try {
+        const a = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=');
+        a.volume = 0;
+        const pr = a.play();
+        if (pr && pr.catch) pr.catch(() => {});
+    } catch(e) {}
+}
+
 function startGame() {
+    unlockAudio();
     document.getElementById('homeScreen').style.display = 'none';
     document.getElementById('gameContent').style.display = '';
 
@@ -1650,7 +1678,8 @@ function startGame() {
     // Traženje dopuštenja za mikrofon (samo jednom, nakon klika na Start)
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.getUserMedia({ audio: true })
-            .then(() => {
+            .then(stream => {
+                stream.getTracks().forEach(t => t.stop());
                 // Dopuštenje odobreno - kreni s igrom
                 nextAnimal();
             })
