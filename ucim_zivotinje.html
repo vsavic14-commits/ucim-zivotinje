@@ -103,7 +103,13 @@
             100% { transform: scale(1); }
         }
 
-        .header-right { display: flex; gap: 8px; align-items: center; }
+        .header-right { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%; }
+        .lang-toggle { display: contents; }
+        .header-right button, .level-toggle button {
+            width: 100%; min-width: 0; height: 48px; padding: 0 6px; font-size: 0.95rem;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            display: flex; align-items: center; justify-content: center; gap: 4px;
+        }
 
         .stars-row {
             display: flex;
@@ -134,7 +140,6 @@
             100% { transform: translate(var(--dx), var(--dy)) scale(0.3); opacity: 0.2; }
         }
 
-        .lang-toggle { display: flex; gap: 6px; }
         .lang-btn {
             padding: 9px 16px;
             border: 3px solid #6c5ce7;
@@ -167,12 +172,47 @@
         .settings-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #ffa94d; }
         .settings-btn:hover { background: #fff4e6; }
 
+        .mode-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border: 3px solid #4dabf7;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            background: white;
+            color: #1c7ed6;
+            transition: all 0.2s;
+            box-shadow: 0 4px 0 #4dabf7;
+        }
+        .mode-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #4dabf7; }
+        .mode-btn.active { background: linear-gradient(135deg, #4dabf7, #1c7ed6); color: white; }
+        .mode-btn.locked { border-color: #ced4da; color: #adb5bd; box-shadow: 0 4px 0 #ced4da; }
+        body.mode-a .card { display: none; }
+        #aList { display: none; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; max-width: 600px; padding: 0 0 30px; }
+        body.mode-a #aList { display: grid; }
+        .a-item { position: relative; min-width: 0; padding: 6px !important; border-width: 3px !important; background: white; border: 4px solid #ffd43b; border-radius: 22px; padding: 8px; cursor: pointer; box-shadow: 0 5px 0 #ffa94d; transition: transform 0.1s; }
+        .a-item:active { transform: translateY(3px); box-shadow: 0 2px 0 #ffa94d; }
+        .a-item img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 14px; }
+        .a-item.seen { border-color: #51cf66; box-shadow: 0 5px 0 #37b24d; }
+        .a-item .a-check { position: absolute; top: -10px; right: -10px; font-size: 1.6rem; display: none; }
+        .a-item.seen .a-check { display: block; }
+        #aOverlay { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(20,20,40,0.96); flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 16px; cursor: pointer; }
+        #aOverlay.open { display: flex; }
+        #aOverlay img { width: min(96vw, 51vh * 1.5); aspect-ratio: 3 / 2; object-fit: cover; border-radius: 20px; }
+        #aOverlayText { color: white; font-size: 2.2rem; font-weight: 700; text-align: center; }
+        #aOverlaySound { color: #ffd43b; font-size: 1.6rem; font-weight: 600; text-align: center; min-height: 2rem; }
+        #aOverlayClose { position: absolute; top: 14px; right: 14px; font-size: 1.6rem; background: white; border: none; border-radius: 50%; width: 52px; height: 52px; cursor: pointer; }
+        #aOverlayCloseBtn { font-family: 'Fredoka', sans-serif; font-size: 1.2rem; font-weight: 700; padding: 10px 28px; border: none; border-radius: 18px; background: #ff6b6b; color: white; cursor: pointer; }
+        #aOverlayRepeat { font-family: 'Fredoka', sans-serif; font-size: 1.2rem; font-weight: 700; padding: 10px 24px; border: none; border-radius: 18px; background: #ffd43b; cursor: pointer; }
+
         .level-toggle {
             display: flex;
             gap: 6px;
             width: 100%;
             max-width: 600px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
         .level-btn {
             flex: 1;
@@ -527,10 +567,12 @@
             background: white;
             border-radius: 20px;
             padding: 24px 28px;
+            width: 100%;
             max-width: 480px;
+            box-sizing: border-box;
             box-shadow: 0 8px 24px rgba(0,0,0,0.1);
             text-align: left;
-            margin-bottom: 28px;
+            margin-bottom: 16px;
         }
         .home-rules h2 {
             font-size: 1.2rem;
@@ -545,45 +587,52 @@
         }
         .home-start-btn {
             font-family: 'Baloo 2', sans-serif;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 700;
             color: white;
             background: linear-gradient(135deg, #51cf66, #37b24d);
             border: none;
             border-radius: 18px;
-            padding: 16px 48px;
+            padding: 16px 12px;
             cursor: pointer;
             box-shadow: 0 6px 0 #2f9e44;
             transition: transform 0.1s;
+            flex: 1;
+            min-width: 0;
+            box-sizing: border-box;
         }
         .home-start-btn:active {
             transform: translateY(4px);
             box-shadow: 0 2px 0 #2f9e44;
         }
-        .home-reset-btn {
+        .home-reset-inline {
             font-family: 'Baloo 2', sans-serif;
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 600;
             color: white;
             background: linear-gradient(135deg, #ff6b9d, #ee5a6f);
             border: none;
-            border-radius: 18px;
-            padding: 16px 32px;
+            border-radius: 14px;
+            padding: 8px 18px;
             cursor: pointer;
-            box-shadow: 0 6px 0 #c92a2a;
+            box-shadow: 0 4px 0 #c92a2a;
             transition: transform 0.1s;
+            flex-shrink: 0;
         }
-        .home-reset-btn:active {
-            transform: translateY(4px);
-            box-shadow: 0 2px 0 #c92a2a;
+        .home-reset-inline:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #c92a2a;
         }
         .home-progress {
             background: linear-gradient(135deg, #fff9db, #ffe066);
             border: 3px solid #ffd43b;
             border-radius: 16px;
             padding: 16px;
-            margin: 16px 0;
+            margin: 0 0 16px;
             text-align: center;
+            width: 100%;
+            max-width: 480px;
+            box-sizing: border-box;
         }
         .home-start-btn:active {
             transform: translateY(4px);
@@ -599,22 +648,26 @@
     <div class="home-rules">
         <h2 id="homeRulesTitle">📋 Pravila igre</h2>
         <ul id="homeRulesList">
-            <li>Na ekranu će se pojaviti slika životinje.</li>
-            <li>Pritisni mikrofon 🎙️ i izgovori ime životinje naglas.</li>
-            <li>Ako točno pogodiš, dobivaš zvjezdicu ⭐.</li>
-            <li>Riješi sve životinje u Level 1 da otključaš teži Level 2.</li>
+            <li>🅰️ Level A: gledaš sliku životinje i slušaš kako se zove i kako se glasa.</li>
+            <li>🅱️ Level B: pritisni mikrofon 🎙️ i izgovori ime životinje naglas. Točan odgovor donosi zvjezdicu ⭐.</li>
+            <li>Level B Level 1 se otključa kad riješiš Level A Level 1 (isto vrijedi za Level 2 i 3).</li>
+            <li>Riješi sve životinje u levelu da otključaš teži level.</li>
         </ul>
     </div>
     <div class="home-progress" id="homeProgress" style="display:none;">
-        <div style="font-size: 1.1rem; font-weight: 600; color: #ff6b9d; margin-bottom: 8px;">
-            💾 Pronađen spremljeni progres
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px;">
+            <div style="font-size: 1.1rem; font-weight: 600; color: #ff6b9d;">
+                💾 Pronađen spremljeni progres
+            </div>
+            <button class="home-reset-inline" id="homeResetBtn" onclick="resetProgress()">🔄 Reset</button>
         </div>
         <div id="homeProgressDetails" style="font-size: 0.95rem; color: #555;">
         </div>
     </div>
-    <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
-        <button class="home-start-btn" id="homeStartBtn" onclick="startGame()">▶️ Start</button>
-        <button class="home-reset-btn" id="homeResetBtn" onclick="resetProgress()" style="display:none;">🔄 Reset</button>
+    <div style="display: flex; gap: 12px; width: 100%; max-width: 480px; box-sizing: border-box;">
+        <button class="home-start-btn" id="homeStartBtn" onclick="startGame('A')">🅰️ Učim slušanjem</button>
+        <button class="home-start-btn" id="homeStartBtnB" onclick="startGame('B')" style="background: linear-gradient(135deg, #4dabf7, #1c7ed6); box-shadow: 0 6px 0 #1864ab;">🅱️ Učim govorom</button>
+        <style>.home-start-btn#homeStartBtnB{flex:1}</style>
     </div>
 </div>
 
@@ -628,9 +681,15 @@
             <button class="lang-btn" onclick="setLang('en')">🇬🇧 EN</button>
         </div>
         <button class="settings-btn" onclick="toggleSettings()">⚙️ Glas</button>
+        <button class="settings-btn" onclick="resetProgress()">🔄 Reset</button>
     </div>
 </header>
 
+<!-- MODE SELECTOR -->
+<div class="level-toggle">
+    <button class="mode-btn active" id="modeBtnA" onclick="setMode('A')">🅰️ Level A - Slušam</button>
+    <button class="mode-btn locked" id="modeBtnB" onclick="setMode('B')">🔒 Level B - Govorim</button>
+</div>
 <!-- LEVEL SELECTOR -->
 <div class="level-toggle">
     <button class="level-btn active" id="levelBtn1" onclick="setLevel(1)">⭐ Level 1 - Lako</button>
@@ -690,6 +749,16 @@
     </div>
 </div>
 
+<div id="aList"></div>
+<div id="aOverlay" onclick="closeOverlayA()">
+    <button id="aOverlayClose" onclick="closeOverlayA()">✖</button>
+    <img id="aOverlayImg" src="" alt="">
+    <div id="aOverlayText"></div>
+    <div id="aOverlaySound"></div>
+    <button id="aOverlayRepeat" onclick="event.stopPropagation(); playA()">🔊</button>
+    <button id="aOverlayCloseBtn" onclick="closeOverlayA()">Zatvori</button>
+</div>
+
 <!-- MAIN CARD -->
 <div class="card">
     <img class="animal-display" id="animalDisplay" src="images/dog.jpg" alt="Životinja">
@@ -719,24 +788,24 @@
 
 <script>
 // ─── Životinje ───────────────────────────────────────────────────────────────
-// Level 1 - Lako: domaće životinje (7 komada)
+// Level 1 - Lako: domaće životinje (6 komada)
 const ANIMALS_LEVEL1 = [
     { hr:'pas',   en:'dog',    img:'images/dog.jpg',  alts_hr:['pas','psu','psić','psica','pse','psic','pasić','pesek','av av'],     alts_en:['doggy','puppy','doggie','woof'], level:1 },
     { hr:'mačka', en:'cat',    img:'images/cat.jpg',  alts_hr:['maca','macica','mačke','mački','mačku','maka','macka','mjau'],      alts_en:['kitty','kitten','pussy','meow'], level:1 },
     { hr:'riba',  en:'fish',   img:'images/fish.jpg',  alts_hr:['ribu','ribi','ribica','ribče','ribe'],                       alts_en:['fishy','fishes'], level:1 },
     { hr:'ptica', en:'bird',   img:'images/bird.jpg',  alts_hr:['pticu','ptici','ptičica','ptico','ptic','ptica','птица','птичица'],     alts_en:['birdie','birdy','tweet'], level:1 },
     { hr:'krava', en:'cow',    img:'images/cow.jpg',  alts_hr:['kravu','kravi','kravice','kravica','mu', 'kava'],                    alts_en:['cattle','bull','calf','moo'], level:1 },
-    { hr:'svinja', en:'pig',   img:'images/pig.jpg',  alts_hr:['svinju','svinji','prasac','prase','praščić','rok rok','oink'],     alts_en:['piggy','piglet','hog','swine','oink'], level:1 },
-    { hr:'kokoš', en:'chicken', img:'images/chicken.jpg',  alts_hr:['kokoši','kokošku','kokica','pile','piletina','kok kok','ko ko'],     alts_en:['hen','chick','rooster','cluck'], level:1 }
+    { hr:'svinja', en:'pig',   img:'images/pig.jpg',  alts_hr:['svinju','svinji','prasac','prase','praščić','rok rok','oink'],     alts_en:['piggy','piglet','hog','swine','oink'], level:1 }
 ];
 
-// Level 2 - Srednje: farma + vrt (5 komada)
+// Level 2 - Srednje: farma + vrt (6 komada)
 const ANIMALS_LEVEL2 = [
     { hr:'zec',   en:'rabbit', img:'images/rabbit.jpg',  alts_hr:['zeca','zecu','kunić','kuniću','zeče','zunic','zeko','zečić'],alts_en:['bunny','hare','bun'], level:2 },
     { hr:'konj',  en:'horse',  img:'images/horse.jpg',  alts_hr:['konja','konju','kobila','konjić','horse'],                     alts_en:['pony','stallion','mare','horsie'], level:2 },
     { hr:'patka', en:'duck',   img:'images/duck.jpg',  alts_hr:['patku','patki','patak','pače','kva kva','quack'],     alts_en:['duckling','mallard','quack'], level:2 },
     { hr:'pčela',  en:'bee',    img:'images/bee.jpg',  alts_hr:['pčelu','pčeli','pčelica','pcela','buba','bzz','zum zum'],     alts_en:['bumblebee','honeybee','buzz'], level:2 },
-    { hr:'leptir', en:'butterfly', img:'images/butterfly.jpg',  alts_hr:['leptira','leptiru','leptirić','leptir','leptiric'],     alts_en:['butterflies','moth'], level:2 }
+    { hr:'leptir', en:'butterfly', img:'images/butterfly.jpg',  alts_hr:['leptira','leptiru','leptirić','leptir','leptiric'],     alts_en:['butterflies','moth'], level:2 },
+    { hr:'kokoš', en:'chicken', img:'images/chicken.jpg',  alts_hr:['kokoši','kokošku','kokica','pile','piletina','kok kok','ko ko'],     alts_en:['hen','chick','rooster','cluck'], level:2 }
 ];
 
 // Level 3 - Teško: egzotične/divlje životinje (8 komada)
@@ -812,6 +881,21 @@ let level3Unlocked = false; // Da li je Level 3 otključan
 let level1Complete = false; // Da li je Level 1 kompletan - zaustavlja igru
 let level2Complete = false; // Da li je Level 2 kompletan - zaustavlja igru
 let level3Complete = false; // Da li je Level 3 kompletan - zaustavlja igru
+let mode = 'A'; // 'A' = slušanje, 'B' = govorenje
+let aDone = new Set(); // Završeni levelovi u modu A (1,2,3)
+let aSeen = new Set(); // Životinje prikazane u trenutnom A levelu
+let aToken = 0;
+let aFinished = false;
+
+const SOUNDS = {
+    dog:{hr:'vau vau',en:'woof woof'}, cat:{hr:'mijau mijau',en:'meow meow'}, fish:{hr:'blub blub',en:'blub blub'},
+    bird:{hr:'cvrk cvrk',en:'tweet tweet'}, cow:{hr:'muuu muuu',en:'moooo moooo'}, pig:{hr:'groc groc',en:'oink oink'},
+    chicken:{hr:'kokodak kokodak',en:'cluck cluck'}, rabbit:{hr:'tup tup tup',en:'thump thump'}, horse:{hr:'ihaha ihaha',en:'neigh neigh'},
+    duck:{hr:'kva kva',en:'quack quack'}, bee:{hr:'bzzz bzzz',en:'bzzz bzzz'}, butterfly:{hr:'frrr frrr',en:'flap flap'},
+    lion:{hr:'rrraaar',en:'roooaar'}, elephant:{hr:'tooot tooot',en:'toot toot'}, bear:{hr:'grrr grrr',en:'grrr grrr'},
+    monkey:{hr:'u u a a',en:'ooh ooh aah aah'}, giraffe:{hr:'hmm hmm',en:'hmm hmm'}, dolphin:{hr:'ik ik ik',en:'eek eek eek'},
+    wolf:{hr:'auuuu auuuu',en:'awooo awooo'}, zebra:{hr:'ihaha ihaha',en:'neigh neigh'}
+};
 
 // TTS postavke
 let selectedVoice = null;
@@ -829,6 +913,8 @@ function saveProgress() {
         level3Solved: Array.from(level3Solved),
         level2Unlocked: level2Unlocked,
         level3Unlocked: level3Unlocked,
+        mode: mode,
+        aDone: Array.from(aDone),
         timestamp: new Date().toISOString()
     };
     localStorage.setItem('ucilica_progress', JSON.stringify(progress));
@@ -851,6 +937,8 @@ function loadProgress() {
         level3Solved = new Set(progress.level3Solved || []);
         level2Unlocked = progress.level2Unlocked || false;
         level3Unlocked = progress.level3Unlocked || false;
+        mode = progress.mode === 'B' ? 'B' : 'A';
+        aDone = new Set(progress.aDone || []);
         
         // Ažuriraj UI
         document.getElementById('starCount').textContent = starCount;
@@ -978,15 +1066,10 @@ function sayGoogleTTS(text, onEnd) {
     audio.addEventListener('play', () => applyChildVoiceFilter(audio), { once: true });
     
     // Pozovi callback kad se audio završi
-    if (onEnd) {
-        audio.onended = onEnd;
-        audio.onerror = onEnd;
-    }
-    
-    audio.play().catch(() => {
-        // Fallback na Web Speech API ako Google TTS ne radi
-        sayWebSpeech(text, onEnd);
-    });
+    const fallback = once(() => sayWebSpeech(text, onEnd));
+    audio.onended = () => { if (onEnd) onEnd(); };
+    audio.onerror = fallback;
+    audio.play().catch(fallback);
 }
 
 function sayWebSpeech(text, onEnd) {
@@ -1013,7 +1096,10 @@ function sayWebSpeech(text, onEnd) {
     window.speechSynthesis.speak(u);
 }
 
-function speakQuestion() { say(T[lang].question); }
+function speakQuestion() {
+    if (mode === 'A') { if (animal) playA(); return; }
+    say(T[lang].question);
+}
 
 // ─── Settings panel ───────────────────────────────────────────────────────────
 function toggleSettings() {
@@ -1023,9 +1109,171 @@ function toggleSettings() {
 }
 
 // ─── Level ────────────────────────────────────────────────────────────────────
+function isUnlocked(m, level) {
+    if (m === 'A') return level === 1 || aDone.has(level - 1);
+    if (!aDone.has(level)) return false;
+    if (level === 2) return level2Unlocked;
+    if (level === 3) return level3Unlocked;
+    return true;
+}
+
+function stopAudioNow() {
+    if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+}
+
+function once(fn) {
+    let called = false;
+    return () => { if (called) return; called = true; fn(); };
+}
+
+function setMode(m) {
+    if (!isUnlocked(m, 1)) {
+        document.getElementById('levelProgress').textContent = lang === 'hr'
+            ? '🔒 Prvo riješi Level 1 u modu A da otključaš Level B'
+            : '🔒 Finish Level 1 in mode A to unlock Level B';
+        return;
+    }
+    if (m === mode && document.body.classList.contains('mode-' + m.toLowerCase())) return;
+    aToken++;
+    stopListen();
+    stopAudioNow();
+    mode = m;
+    setLevel(isUnlocked(m, currentLevel) ? currentLevel : 1, false);
+    nextAnimal();
+}
+
+function updateModeUI() {
+    document.body.classList.toggle('mode-a', mode === 'A');
+    document.getElementById('modeBtnA').classList.toggle('active', mode === 'A');
+    document.getElementById('modeBtnB').classList.toggle('active', mode === 'B');
+    const bOpen = isUnlocked('B', 1);
+    const btnB = document.getElementById('modeBtnB');
+    btnB.classList.toggle('locked', !bOpen);
+    btnB.textContent = (bOpen ? '🅱️' : '🔒') + (lang === 'hr' ? ' Level B - Govorim' : ' Level B - I speak');
+    document.getElementById('modeBtnA').textContent = '🅰️' + (lang === 'hr' ? ' Level A - Slušam' : ' Level A - I listen');
+    document.getElementById('speakBtn').textContent = mode === 'A'
+        ? (lang === 'hr' ? '🔊 Ponovi' : '🔊 Repeat')
+        : T[lang].speakBtn;
+}
+
+function thisIs(a) {
+    if (lang === 'hr') return 'Ovo je ' + a.hr;
+    return 'This is ' + (/^[aeiou]/.test(a.en) ? 'an ' : 'a ') + a.en;
+}
+
+function showListA() {
+    aToken++;
+    stopAudioNow();
+    closeOverlayA();
+    animal = null;
+    const list = document.getElementById('aList');
+    list.innerHTML = '';
+    queue.forEach(a => {
+        const item = document.createElement('div');
+        item.className = 'a-item' + (aSeen.has(a.hr) ? ' seen' : '');
+        item.dataset.hr = a.hr;
+        item.innerHTML = '<span class="a-check">✅</span><img src="' + a.img + '" alt="">';
+        item.onclick = () => openAnimalA(a);
+        list.appendChild(item);
+    });
+    updateLevelProgress();
+}
+
+function openAnimalA(a) {
+    animal = a;
+    aSeen.add(a.hr);
+    const el = document.querySelector('.a-item[data-hr="' + a.hr + '"]');
+    if (el) el.classList.add('seen');
+    document.getElementById('aOverlayImg').src = a.img;
+    document.getElementById('aOverlay').classList.add('open');
+    updateLevelProgress();
+    playA();
+}
+
+function closeOverlayA() {
+    const o = document.getElementById('aOverlay');
+    if (!o.classList.contains('open')) return;
+    o.classList.remove('open');
+    aToken++;
+    stopAudioNow();
+    if (mode === 'A' && !aFinished && aSeen.size >= queue.length) finishLevelA();
+}
+
+function renderA() {
+    document.getElementById('aOverlayText').textContent = thisIs(animal);
+    document.getElementById('aOverlaySound').textContent = '🔊 ' + SOUNDS[animal.en][lang];
+    document.getElementById('aOverlayRepeat').textContent = lang === 'hr' ? '🔊 Ponovi' : '🔊 Repeat';
+    document.getElementById('aOverlayCloseBtn').textContent = lang === 'hr' ? 'Zatvori' : 'Close';
+}
+
+function playAnimalSound(a, done) {
+    const sound = SOUNDS[a.en][lang];
+    const fallback = once(() => say(sound, done));
+    const finish = once(done);
+    try {
+        const audio = new Audio('sounds/' + a.en + '.mp3');
+        currentAudio = audio;
+        audio.onended = finish;
+        audio.onerror = fallback;
+        audio.play().catch(fallback);
+    } catch (e) {
+        fallback();
+    }
+}
+
+function playA() {
+    if (!animal) return;
+    const t = ++aToken;
+    stopAudioNow();
+    renderA();
+    say(thisIs(animal), once(() => {
+        if (t !== aToken) return;
+        playAnimalSound(animal, () => {});
+    }));
+}
+
+function finishLevelA() {
+    if (aFinished) return;
+    aFinished = true;
+    const level = currentLevel;
+    const first = !aDone.has(level);
+    aDone.add(level);
+    saveProgress();
+    updateLevelButtonLabels();
+    updateModeUI();
+
+    const hr = lang === 'hr';
+    const msg1 = hr ? `🎉 Level A${level} je riješen!` : `🎉 Level A${level} complete!`;
+    const msg2 = hr ? `Level B${level} je otključan.` : `Level B${level} is unlocked.`;
+    if (first) {
+        celebrateLevelUp(level, null, `🎉 Level A${level} ${hr ? 'RIJEŠEN' : 'COMPLETE'}! 🎉<br><span style="font-size:1rem;font-weight:600;">${msg2}</span>`);
+    }
+    document.getElementById('levelProgress').textContent = msg1 + ' ' + msg2;
+    say(msg1 + ' ' + msg2);
+}
+
 function updateLevelProgress() {
     const el = document.getElementById('levelProgress');
     if (!el) return;
+
+    if (mode === 'A') {
+        const total = [ANIMALS_LEVEL1, ANIMALS_LEVEL2, ANIMALS_LEVEL3][currentLevel - 1].length;
+        if (aFinished) {
+            el.textContent = lang === 'hr'
+                ? `🎉 Level A${currentLevel} je riješen! Level B${currentLevel} je otključan.`
+                : `🎉 Level A${currentLevel} complete! Level B${currentLevel} is unlocked.`;
+            return;
+        }
+        el.textContent = lang === 'hr'
+            ? `🅰️ Klikni na svaku životinju da otključaš Level B${currentLevel} (${aSeen.size}/${total})`
+            : `🅰️ Tap every animal to unlock Level B${currentLevel} (${aSeen.size}/${total})`;
+        return;
+        el.textContent = lang === 'hr'
+            ? `🅰️ Pogledaj i poslušaj sve životinje u Level ${currentLevel} da otključaš Level B${currentLevel} (${aSeen.size}/${total})`
+            : `🅰️ Watch and listen to all Level ${currentLevel} animals to unlock Level B${currentLevel} (${aSeen.size}/${total})`;
+        return;
+    }
     
     if (currentLevel === 1 && !level2Unlocked) {
         const done = level1Solved.size;
@@ -1050,7 +1298,7 @@ function updateLevelProgress() {
     }
 }
 
-function celebrateLevelUp(completedLevel, nextLevel) {
+function celebrateLevelUp(completedLevel, nextLevel, customHtml) {
     // Konfeti / padajuće zvjezdice preko cijelog ekrana
     const layer = document.createElement('div');
     layer.className = 'confetti-layer';
@@ -1089,7 +1337,9 @@ function celebrateLevelUp(completedLevel, nextLevel) {
     const banner = document.createElement('div');
     banner.className = 'level-complete-banner';
     
-    if (nextLevel) {
+    if (customHtml) {
+        banner.innerHTML = customHtml;
+    } else if (nextLevel) {
         // Otključavanje novog levela
         banner.innerHTML = lang === 'hr'
             ? `🎉 Level ${completedLevel} RIJEŠEN! 🎉<br><span style="font-size:1rem;font-weight:600;">Level ${nextLevel} je otključan!</span>`
@@ -1121,7 +1371,10 @@ function unlockLevel2() {
     
     // Prikaži završetak Levela 1 i najavi automatski početak Levela 2.
     const msg1 = lang === 'hr' ? '🎉 Sve životinje iz Levela 1 su riješene!' : '🎉 All Level 1 animals are complete!';
-    const msg2 = lang === 'hr' ? 'Krećemo na Level 2!' : 'Starting Level 2!';
+    const go2 = isUnlocked('B', 2);
+    const msg2 = go2
+        ? (lang === 'hr' ? 'Krećemo na Level 2!' : 'Starting Level 2!')
+        : (lang === 'hr' ? 'Za Level B2 prvo riješi Level A2!' : 'To unlock Level B2, finish Level A2 first!');
     
     document.getElementById('animalDisplay').src = ''; // Ukloni sliku
     document.getElementById('feedback').textContent = '🎉';
@@ -1136,7 +1389,7 @@ function unlockLevel2() {
     
     updateLevelProgress();
     say(msg1 + '. ' + msg2);
-    setTimeout(() => setLevel(2), 3000);
+    if (go2) setTimeout(() => setLevel(2), 3000);
 }
 
 function unlockLevel3() {
@@ -1155,7 +1408,10 @@ function unlockLevel3() {
     
     // Prikaži poruku za završetak Level 2
     const msg1 = lang === 'hr' ? '🎉 Level 2 RIJEŠEN!' : '🎉 Level 2 COMPLETED!';
-    const msg2 = lang === 'hr' ? 'Klikni na Level 3 za najveći izazov!' : 'Click Level 3 for the ultimate challenge!';
+    const go3 = isUnlocked('B', 3);
+    const msg2 = go3
+        ? (lang === 'hr' ? 'Klikni na Level 3 za najveći izazov!' : 'Click Level 3 for the ultimate challenge!')
+        : (lang === 'hr' ? 'Za Level B3 prvo riješi Level A3!' : 'To unlock Level B3, finish Level A3 first!');
     
     document.getElementById('animalDisplay').src = ''; // Ukloni sliku
     document.getElementById('feedback').textContent = '🎉';
@@ -1206,15 +1462,20 @@ function completeLevel3() {
     say(msg1 + '. ' + msg2);
 }
 
-function setLevel(level) {
-    if (level === 2 && !level2Unlocked) {
-        updateLevelProgress();
-        return; // Level 2 je zaključan
+function setLevel(level, startImmediately = true) {
+    if (!isUnlocked(mode, level)) {
+        const el = document.getElementById('levelProgress');
+        const need = mode === 'B' && !aDone.has(level);
+        el.textContent = lang === 'hr'
+            ? (need ? `🔒 Prvo riješi Level A${level}` : `🔒 Level ${level} je zaključan`)
+            : (need ? `🔒 Finish Level A${level} first` : `🔒 Level ${level} is locked`);
+        return;
     }
-    if (level === 3 && !level3Unlocked) {
-        updateLevelProgress();
-        return; // Level 3 je zaključan
-    }
+    aToken++;
+    stopListen();
+    stopAudioNow();
+    aFinished = false;
+    aSeen = new Set();
     currentLevel = level;
     ANIMALS = level === 1 ? ANIMALS_LEVEL1 : level === 2 ? ANIMALS_LEVEL2 : ANIMALS_LEVEL3;
     
@@ -1228,14 +1489,18 @@ function setLevel(level) {
     level1Complete = false; // Dozvoli igri da se nastavi u novom levelu
     level2Complete = false; // Dozvoli igri da se nastavi u novom levelu
     level3Complete = false; // Dozvoli igri da se nastavi u novom levelu
-    if (level === 1) {
-        level1Solved.clear(); // Resetuj napredak Level 1
+    if (mode === 'B') {
+        if (level === 1) level1Solved.clear();
+        if (level === 2) level2Solved.clear();
+        if (level === 3) level3Solved.clear();
     }
-    if (level === 2) {
-        level2Solved.clear(); // Resetuj napredak Level 2
-    }
-    if (level === 3) {
-        level3Solved.clear(); // Resetuj napredak Level 3
+    updateModeUI();
+    document.getElementById('micBtn').disabled = false;
+    document.getElementById('starAwardMessage').textContent = '';
+    if (mode === 'B') {
+        document.getElementById('questionText').textContent = T[lang].question;
+        document.getElementById('statusText').textContent = T[lang].prompt;
+        document.getElementById('animalDisplay').src = '';
     }
     
     // Ažuriraj UI
@@ -1255,27 +1520,17 @@ function setLevel(level) {
     // 💾 SPREMI PROGRES
     saveProgress();
     
-    nextAnimal();
+    if (startImmediately) nextAnimal();
 }
 
 function updateLevelButtonLabels() {
-    const btn1 = document.getElementById('levelBtn1');
-    const btn2 = document.getElementById('levelBtn2');
-    const btn3 = document.getElementById('levelBtn3');
-    
-    if (lang === 'hr') {
-        btn1.textContent = '⭐ Level 1 - Lako';
-        btn2.textContent = level2Unlocked ? '⭐⭐ Level 2 - Srednje' : '🔒 Level 2 - Srednje';
-        btn3.textContent = level3Unlocked ? '⭐⭐⭐ Level 3 - Teško' : '🔒 Level 3 - Teško';
-    } else {
-        btn1.textContent = '⭐ Level 1 - Easy';
-        btn2.textContent = level2Unlocked ? '⭐⭐ Level 2 - Medium' : '🔒 Level 2 - Medium';
-        btn3.textContent = level3Unlocked ? '⭐⭐⭐ Level 3 - Hard' : '🔒 Level 3 - Hard';
+    const names = lang === 'hr' ? ['Lako', 'Srednje', 'Teško'] : ['Easy', 'Medium', 'Hard'];
+    for (let n = 1; n <= 3; n++) {
+        const btn = document.getElementById('levelBtn' + n);
+        const open = isUnlocked(mode, n);
+        btn.textContent = (open ? '⭐'.repeat(n) : '🔒') + ` Level ${n} - ${names[n - 1]}`;
+        btn.classList.toggle('locked', !open);
     }
-    
-    // Ukloni 'locked' klasu ako je otključan
-    if (level2Unlocked) btn2.classList.remove('locked');
-    if (level3Unlocked) btn3.classList.remove('locked');
 }
 
 // ─── Jezik ────────────────────────────────────────────────────────────────────
@@ -1287,6 +1542,7 @@ function setLang(l) {
     document.getElementById('questionText').textContent = T[l].question;
     document.getElementById('speakBtn').textContent     = T[l].speakBtn;
     document.getElementById('statusText').textContent   = T[l].prompt;
+    updateModeUI();
 
     // Prikaži odgovarajući panel glasovnih postavki
     document.getElementById('hrVoicePanel').style.display = l === 'hr' ? 'block' : 'none';
@@ -1298,7 +1554,8 @@ function setLang(l) {
 
     if (l === 'en') loadVoices();
     initRecognition();
-    speakQuestion();
+    if (mode === 'A') { updateLevelProgress(); if (animal) renderA(); }
+    else speakQuestion();
 }
 
 // ─── Speech recognition ───────────────────────────────────────────────────────
@@ -1571,6 +1828,7 @@ function updateAnimalPosition() {
 }
 
 function nextAnimal() {
+    if (mode === 'A') { showListA(); return; }
     // Zaustavi se nakon završetka levela.
     if (level1Complete || level2Complete || level3Complete) return;
 
@@ -1715,17 +1973,16 @@ function checkProgress() {
         const homeProgress = document.getElementById('homeProgress');
         const homeProgressDetails = document.getElementById('homeProgressDetails');
         const homeStartBtn = document.getElementById('homeStartBtn');
-        const homeResetBtn = document.getElementById('homeResetBtn');
-        
         homeProgress.style.display = 'block';
-        homeResetBtn.style.display = 'inline-block';
-        homeStartBtn.textContent = '▶️ Nastavi';
+        homeStartBtn.textContent = '🅰️ Učim slušanjem';
         
         const levelNames = {1: 'Level 1 (Lako)', 2: 'Level 2 (Teže)', 3: 'Level 3 (Teško)'};
+        const modeName = saved.mode === 'B' ? 'B' : 'A';
         homeProgressDetails.innerHTML = 
             `⭐ Zvjezdice: <strong>${saved.starCount}</strong><br>` +
-            `📊 Trenutni level: <strong>${levelNames[saved.currentLevel]}</strong><br>` +
-            `✅ Riješeno životinja: <strong>${saved.level1Solved.length + saved.level2Solved.length + saved.level3Solved.length}</strong>`;
+            `📊 Trenutni level: <strong>${modeName} - ${levelNames[saved.currentLevel]}</strong><br>` +
+            `✅ Riješeno životinja: <strong>${saved.level1Solved.length + saved.level2Solved.length + saved.level3Solved.length}</strong><br>` +
+            `🅰️ Završeno A levela: <strong>${(saved.aDone || []).length}</strong>`;
     }
 }
 
@@ -1734,6 +1991,8 @@ checkProgress();
 
 // Povratak na početnu stranicu s uputama
 function goHome() {
+    document.getElementById('aOverlay').classList.remove('open');
+    aToken++;
     stopListen();
     if (currentAudio) {
         currentAudio.pause();
@@ -1767,7 +2026,7 @@ function unlockAudio() {
     } catch(e) {}
 }
 
-function startGame() {
+function startGame(requestedMode) {
     unlockAudio();
     document.getElementById('homeScreen').style.display = 'none';
     document.getElementById('gameContent').style.display = '';
@@ -1780,12 +2039,20 @@ function startGame() {
         updateLevelButtonLabels();
     }
     
+    mode = requestedMode === 'B' && isUnlocked('B', 1) ? 'B' : 'A';
+    if (requestedMode === 'B' && mode === 'A') {
+        alert(lang === 'hr' ? 'Level B se otključava kad riješiš Level 1 u modu A.' : 'Level B unlocks after you finish Level 1 in mode A.');
+    }
+    if (!isUnlocked(mode, currentLevel)) currentLevel = 1;
+
     // Postavi ispravan level nakon učitavanja
-    setLevel(currentLevel);
-    
-    // Inicijalizacija igre tek na start
-    queue = shuffle(ANIMALS);
+    setLevel(currentLevel, false);
     initRecognition();
+
+    if (mode === 'A') {
+        nextAnimal();
+        return;
+    }
 
     // Traženje dopuštenja za mikrofon (samo jednom, nakon klika na Start)
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {

@@ -1,0 +1,11 @@
+# Privremene i testne datoteke
+server.log
+home_shot.png
+test_progress.html
+ucilica_za_test.zip
+INSTRUKCIJE_ZA_TEST.txt
+
+# OS / editor
+Thumbs.db
+.DS_Store
+*.swp
