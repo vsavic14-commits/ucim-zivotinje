@@ -1,0 +1,2078 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>🐾 Učim životinje</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Fredoka', 'Baloo 2', system-ui, sans-serif;
+            background: linear-gradient(135deg, #a8d8ff 0%, #c5e8ff 30%, #fce4ec 65%, #fff8e1 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Lebdeći dekorativni emojii u pozadini */
+        body::before {
+            content: '⭐ 🌈 🎈 ☁️ 🎨 ⭐ 🎈 🌈';
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            font-size: 2rem;
+            opacity: 0.25;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        header {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+            z-index: 1;
+        }
+
+        h1 {
+            font-family: 'Baloo 2', sans-serif;
+            font-size: 2.1rem;
+            font-weight: 800;
+            color: #ff6b9d;
+            text-shadow: 0 1px 6px rgba(255,107,157,0.15);
+        }
+
+        .star-counter {
+            font-family: 'Baloo 2', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #f08c00;
+            background: #fff9db;
+            border: 3px solid #ffd43b;
+            border-radius: 20px;
+            padding: 6px 16px;
+            box-shadow: 0 2px 8px rgba(240,140,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: transform 0.2s;
+        }
+        .star-counter.pop { animation: starPop 0.5s ease; }
+        .star-award-message {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 8px auto 0;
+            padding: 8px 18px;
+            border: 3px solid #f0b400;
+            border-radius: 24px;
+            background: linear-gradient(135deg, #fff3a3, #ffd43b);
+            color: #7a4b00;
+            font-family: 'Baloo 2', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+            box-shadow: 0 2px 10px rgba(255, 212, 59, 0.2);
+            opacity: 0;
+            transform: scale(.6);
+            pointer-events: none;
+        }
+        .star-award-message.show { animation: awardMessageIn 2.3s ease forwards; }
+        @keyframes awardMessageIn {
+            0% { opacity: 0; transform: scale(.6) translateY(12px); }
+            15%, 78% { opacity: 1; transform: scale(1) translateY(0); }
+            100% { opacity: 0; transform: scale(.9) translateY(-8px); }
+        }
+        @keyframes starPop {
+            0%   { transform: scale(1); }
+            40%  { transform: scale(1.35) rotate(-8deg); }
+            70%  { transform: scale(1.15) rotate(5deg); }
+            100% { transform: scale(1); }
+        }
+
+        .header-right { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%; }
+        .lang-toggle { display: contents; }
+        .header-right button, .level-toggle button {
+            width: 100%; min-width: 0; height: 48px; padding: 0 6px; font-size: 0.95rem;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            display: flex; align-items: center; justify-content: center; gap: 4px;
+        }
+
+        .stars-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 14px;
+            min-height: 30px;
+        }
+        .stars-row span {
+            font-size: 1.6rem;
+            animation: starIn 0.5s cubic-bezier(.175,.885,.32,1.275);
+        }
+        @keyframes starIn {
+            0%   { transform: scale(0) rotate(-180deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .flying-star {
+            position: fixed;
+            font-size: 2.5rem;
+            pointer-events: none;
+            z-index: 999;
+            animation: flyToCounter 0.9s ease-in forwards;
+        }
+        @keyframes flyToCounter {
+            0%   { transform: translate(0,0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--dx), var(--dy)) scale(0.3); opacity: 0.2; }
+        }
+
+        .lang-btn {
+            padding: 9px 16px;
+            border: 3px solid #6c5ce7;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            background: white;
+            color: #6c5ce7;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(108,92,231,0.15);
+        }
+        .lang-btn { box-shadow: 0 2px 6px rgba(108,92,231,0.12); }
+        .lang-btn:active { transform: translateY(2px); box-shadow: 0 1px 3px rgba(108,92,231,0.1); }
+        .lang-btn.active { background: #6c5ce7; color: white; }
+
+        .settings-btn {
+            padding: 9px 14px;
+            border: 3px solid #ffa94d;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            background: white;
+            color: #e8590c;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(255,169,77,0.12);
+        }
+        .settings-btn:active { transform: translateY(2px); box-shadow: 0 1px 3px rgba(255,169,77,0.1); }
+        .settings-btn:hover { background: #fff4e6; }
+
+        .mode-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border: 3px solid #4dabf7;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            background: white;
+            color: #1c7ed6;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(77,171,247,0.12);
+        }
+        .mode-btn:active { transform: translateY(2px); box-shadow: 0 1px 3px rgba(77,171,247,0.1); }
+        .mode-btn.active { background: linear-gradient(135deg, #4dabf7, #1c7ed6); color: white; }
+        .mode-btn.locked { border-color: #ced4da; color: #adb5bd; box-shadow: 0 1px 4px rgba(206,212,218,0.2); }
+        body.mode-a .card { display: none; }
+        #aList { display: none; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; max-width: 600px; padding: 0 0 30px; }
+        body.mode-a #aList { display: grid; }
+        .a-item { position: relative; min-width: 0; padding: 6px !important; border-width: 3px !important; background: white; border: 3px solid #ffd43b; border-radius: 28px; padding: 8px; cursor: pointer; box-shadow: 0 2px 8px rgba(255,169,77,0.12); transition: transform 0.15s ease; }
+        .a-item:active { transform: translateY(2px) scale(0.97); box-shadow: 0 1px 4px rgba(255,169,77,0.1); }
+        .a-item img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 22px; }
+        .a-item.seen { border-color: #51cf66; box-shadow: 0 2px 8px rgba(81,207,102,0.15); }
+        .a-item .a-check { position: absolute; top: -10px; right: -10px; font-size: 1.6rem; display: none; }
+        .a-item.seen .a-check { display: block; }
+        #aOverlay { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(20,20,40,0.96); flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 16px; cursor: pointer; }
+        #aOverlay.open { display: flex; }
+        #aOverlay img { width: min(96vw, 51vh * 1.5); aspect-ratio: 3 / 2; object-fit: cover; border-radius: 32px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+        #aOverlayText { color: white; font-size: 2.2rem; font-weight: 700; text-align: center; }
+        #aOverlaySound { color: #ffd43b; font-size: 1.6rem; font-weight: 600; text-align: center; min-height: 2rem; }
+        #aOverlayClose { position: absolute; top: 14px; right: 14px; font-size: 1.6rem; background: white; border: none; border-radius: 50%; width: 52px; height: 52px; cursor: pointer; }
+        #aOverlayCloseBtn { font-family: 'Fredoka', sans-serif; font-size: 1.2rem; font-weight: 700; padding: 12px 32px; border: none; border-radius: 22px; background: linear-gradient(135deg, #ff6b6b, #ee5a6f); color: white; cursor: pointer; box-shadow: 0 2px 8px rgba(238,90,111,0.2); }
+        #aOverlayRepeat { font-family: 'Fredoka', sans-serif; font-size: 1.2rem; font-weight: 700; padding: 12px 28px; border: none; border-radius: 22px; background: linear-gradient(135deg, #ffd43b, #ffb84d); cursor: pointer; box-shadow: 0 2px 8px rgba(255,212,59,0.2); }
+
+        .level-toggle {
+            display: flex;
+            gap: 6px;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 10px;
+        }
+        .level-btn {
+            flex: 1;
+            padding: 12px 16px;
+            border: 3px solid #51cf66;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            background: white;
+            color: #37b24d;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(81,207,102,0.12);
+        }
+        .level-btn:active { transform: translateY(2px); box-shadow: 0 1px 3px rgba(81,207,102,0.1); }
+        .level-btn.active { background: linear-gradient(135deg, #51cf66, #37b24d); color: white; }
+        .level-btn.locked {
+            border-color: #ced4da;
+            color: #adb5bd;
+            box-shadow: 0 1px 4px rgba(206,212,218,0.2);
+            cursor: not-allowed;
+        }
+        .level-btn.locked:active { transform: none; box-shadow: 0 1px 4px rgba(206,212,218,0.2); }
+
+        .level-progress {
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #7c6fa8;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .animal-position {
+            width: 100%;
+            max-width: 420px;
+            margin: 0 auto 12px;
+            padding: 8px 14px;
+            border-radius: 16px;
+            background: #f3f0ff;
+            color: #5f3dc4;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        .animal-position-track {
+            height: 8px;
+            margin-top: 6px;
+            overflow: hidden;
+            border-radius: 8px;
+            background: #ded8f7;
+        }
+        .animal-position-fill {
+            width: 0;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #9775fa, #5f3dc4);
+            transition: width .35s ease;
+        }
+
+        /* Settings panel */
+        .settings-panel {
+            display: none;
+            background: white;
+            border-radius: 32px;
+            padding: 22px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 4px 16px rgba(108,92,231,0.08);
+            margin-bottom: 16px;
+            border: 3px solid rgba(255,211,245,0.5);
+            z-index: 1;
+        }
+        .settings-panel.open { display: block; }
+
+        .settings-panel h3 { font-family: 'Baloo 2', sans-serif; font-size: 1.2rem; color: #6c5ce7; margin-bottom: 14px; }
+
+        .setting-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .setting-row label { font-size: 0.9rem; color: #666; min-width: 90px; font-weight: 600; }
+
+        .setting-row select, .setting-row input[type=range] {
+            flex: 1;
+            padding: 6px 10px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            min-width: 0;
+        }
+        .setting-row input[type=range] { padding: 0; accent-color: #ff6b9d; }
+
+        .range-val { font-size: 0.8rem; color: #888; min-width: 32px; text-align: right; }
+
+        .test-voice-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #ff9ecb, #ff6b9d);
+            color: white;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 4px;
+            box-shadow: 0 2px 6px rgba(224,90,137,0.15);
+        }
+        .test-voice-btn:active { transform: translateY(2px); box-shadow: 0 1px 3px rgba(224,90,137,0.1); }
+
+        .voice-tip {
+            font-size: 0.78rem;
+            color: #aaa;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+        .google-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #e8f9ee;
+            border: 2px solid #69db7c;
+            border-radius: 14px;
+            padding: 8px 14px;
+            font-size: 0.85rem;
+            color: #2f9e44;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        /* Main card */
+        .card {
+            background: white;
+            border-radius: 36px;
+            padding: 34px 28px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 4px 20px rgba(108,92,231,0.08);
+            text-align: center;
+            border: 4px solid rgba(255,255,255,0.8);
+            z-index: 1;
+            position: relative;
+        }
+
+        .animal-display {
+            width: 100%;
+            max-width: 500px;
+            height: 420px;
+            margin: 0 auto 18px;
+            border-radius: 28px;
+            object-fit: cover;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            border: 6px solid white;
+            transition: transform 0.35s cubic-bezier(.175,.885,.32,1.275);
+            user-select: none;
+        }
+        .animal-display.bounce { transform: scale(1.08) rotate(-1deg); }
+
+        .question {
+            font-family: 'Baloo 2', sans-serif;
+            font-size: 1.6rem;
+            color: #4b4376;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .speak-btn {
+            background: linear-gradient(135deg, #fff4e6, #ffe8cc);
+            border: 2px solid rgba(255,169,77,0.4);
+            color: #e8590c;
+            border-radius: 20px;
+            padding: 8px 18px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 22px;
+            transition: all 0.2s;
+        }
+        .speak-btn:hover { background: #ffa94d; color: white; transform: scale(1.05); }
+
+        .mic-btn {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 5px solid white;
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+            font-size: 2.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 3px 10px rgba(108,92,231,0.2);
+            display: block;
+            margin: 0 auto 16px;
+        }
+        .mic-btn:hover:not(:disabled) { transform: scale(1.06); }
+        .mic-btn:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 2px 6px rgba(72,52,212,0.15); }
+        .mic-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .mic-btn.listening {
+            background: linear-gradient(135deg, #ff9ecb, #ff6b9d);
+            box-shadow: 0 3px 10px rgba(255,107,157,0.25);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%,100% { transform: scale(1); }
+            50%      { transform: scale(1.1); }
+        }
+
+        .status-text { font-size: 1.05rem; color: #7c6fa8; min-height: 24px; margin-bottom: 4px; font-weight: 600; }
+        .heard-text  { font-size: 0.9rem; color: #b0a8c9; min-height: 20px; font-style: italic; margin-bottom: 4px; }
+
+        .attempts-dots {
+            display: flex; justify-content: center; gap: 10px;
+            margin-bottom: 8px; min-height: 22px;
+        }
+        .dot { width: 16px; height: 16px; border-radius: 50%; background: #e8e3f7; transition: background 0.3s; border: 2px solid #d5cdf0; }
+        .dot.wrong { background: #ff6b9d; border-color: #ff6b9d; }
+
+        .feedback { font-size: 5rem; min-height: 80px; display: flex; align-items: center; justify-content: center; }
+
+        .result-label { font-family: 'Baloo 2', sans-serif; font-size: 1.3rem; font-weight: 700; min-height: 30px; margin-bottom: 5px; }
+        .result-label.correct { color: #37b24d; }
+        .result-label.wrong   { color: #f03e5e; }
+
+        .answer-reveal { font-size: 1.1rem; color: #f03e5e; min-height: 22px; margin-bottom: 10px; font-weight: 600; }
+
+        .next-btn {
+            display: none;
+            padding: 16px 40px;
+            border: none;
+            border-radius: 28px;
+            background: linear-gradient(135deg, #51cf66, #37b24d);
+            color: white;
+            font-family: 'Baloo 2', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 6px;
+            box-shadow: 0 2px 8px rgba(47,158,68,0.15);
+        }
+        .next-btn:hover { transform: scale(1.04); }
+        .next-btn:active { transform: translateY(4px); box-shadow: 0 1px 4px rgba(47,158,68,0.1); }
+        .next-btn.visible { display: inline-block; }
+
+        .score {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            color: #7c6fa8;
+            display: flex;
+            justify-content: center;
+            gap: 26px;
+        }
+        .score-item {
+            display: flex; align-items: center; gap: 6px;
+            background: #f5f2ff;
+            padding: 8px 16px;
+            border-radius: 18px;
+            font-weight: 600;
+        }
+        .score-item span { font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 1.3rem; }
+        .score-correct { color: #37b24d; }
+        .score-wrong   { color: #f03e5e; }
+
+        .warning-box {
+            display: none;
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 16px;
+            padding: 14px;
+            margin-top: 14px;
+            font-size: 0.9rem;
+            color: #856404;
+            line-height: 1.5;
+        }
+        .confetti-layer {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 9999;
+        }
+        .confetti-piece {
+            position: absolute;
+            top: -40px;
+            will-change: transform, opacity;
+            animation-name: confetti-fall;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+        }
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) translateX(var(--drift, 0px)) rotate(var(--spin, 360deg));
+                opacity: 0.9;
+            }
+        }
+        .level-complete-banner {
+            position: fixed;
+            top: 18%;
+            left: 50%;
+            transform: translate(-50%, -20px) scale(0.8);
+            background: linear-gradient(135deg, #51cf66, #37b24d);
+            color: white;
+            font-weight: 800;
+            font-size: 1.6rem;
+            padding: 18px 32px;
+            border-radius: 20px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+            z-index: 10000;
+            opacity: 0;
+            text-align: center;
+            pointer-events: none;
+            animation: banner-pop 2.6s ease forwards;
+        }
+        @keyframes banner-pop {
+            0% { opacity: 0; transform: translate(-50%, -20px) scale(0.7); }
+            12% { opacity: 1; transform: translate(-50%, 0) scale(1.08); }
+            20% { transform: translate(-50%, 0) scale(1); }
+            85% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -10px) scale(0.95); }
+        }
+        .home-screen {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 24px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #fce4ec 50%, #fff8e1 100%);
+        }
+        .home-screen .home-title {
+            font-size: 2.6rem;
+            margin-bottom: 8px;
+        }
+        .home-screen .home-subtitle {
+            font-size: 1.1rem;
+            color: #495057;
+            margin-bottom: 24px;
+        }
+        .home-rules {
+            background: white;
+            border-radius: 20px;
+            padding: 24px 28px;
+            width: 100%;
+            max-width: 480px;
+            box-sizing: border-box;
+            box-shadow: 0 4px 16px rgba(108,92,231,0.08);
+            text-align: left;
+            margin-bottom: 16px;
+        }
+        .home-rules h2 {
+            font-size: 1.2rem;
+            margin: 0 0 12px 0;
+            text-align: center;
+        }
+        .home-rules ul {
+            margin: 0;
+            padding-left: 22px;
+            line-height: 1.8;
+            color: #343a40;
+        }
+        .home-start-btn {
+            font-family: 'Baloo 2', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(135deg, #51cf66, #37b24d);
+            border: none;
+            border-radius: 18px;
+            padding: 16px 12px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(47,158,68,0.15);
+            transition: transform 0.15s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .home-start-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 4px rgba(47,158,68,0.1);
+        }
+        .home-reset-inline {
+            font-family: 'Baloo 2', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, #ff6b9d, #ee5a6f);
+            border: none;
+            border-radius: 14px;
+            padding: 8px 18px;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(201,42,42,0.12);
+            transition: transform 0.15s ease;
+            flex-shrink: 0;
+        }
+        .home-reset-inline:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 3px rgba(201,42,42,0.1);
+        }
+        .home-progress {
+            background: linear-gradient(135deg, #fff9db, #ffe066);
+            border: 3px solid #ffd43b;
+            border-radius: 16px;
+            padding: 16px;
+            margin: 0 0 16px;
+            text-align: center;
+            width: 100%;
+            max-width: 480px;
+            box-sizing: border-box;
+        }
+        .home-start-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 4px rgba(47,158,68,0.1);
+        }
+    </style>
+</head>
+<body>
+
+<div class="home-screen" id="homeScreen">
+    <div class="home-title">🐾 Učim životinje</div>
+    <div class="home-subtitle" id="homeSubtitle">Igra za učenje naziva životinja na hrvatskom i engleskom</div>
+    <div class="home-rules">
+        <h2 id="homeRulesTitle">📋 Pravila igre</h2>
+        <ul id="homeRulesList">
+            <li>🅰️ Level A: gledaš sliku životinje i slušaš kako se zove i kako se glasa.</li>
+            <li>🅱️ Level B: pritisni mikrofon 🎙️ i izgovori ime životinje naglas. Točan odgovor donosi zvjezdicu ⭐.</li>
+            <li>Level B Level 1 se otključa kad riješiš Level A Level 1 (isto vrijedi za Level 2 i 3).</li>
+            <li>Riješi sve životinje u levelu da otključaš teži level.</li>
+        </ul>
+    </div>
+    <div class="home-progress" id="homeProgress" style="display:none;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px;">
+            <div style="font-size: 1.1rem; font-weight: 600; color: #ff6b9d;">
+                💾 Pronađen spremljeni progres
+            </div>
+            <button class="home-reset-inline" id="homeResetBtn" onclick="resetProgress()">🔄 Reset</button>
+        </div>
+        <div id="homeProgressDetails" style="font-size: 0.95rem; color: #555;">
+        </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 480px; box-sizing: border-box;">
+        <button class="home-start-btn" id="homeStartBtn" onclick="startGame('A')">🅰️ Učim slušanjem</button>
+        <button class="home-start-btn" id="homeStartBtnB" onclick="startGame('B')" style="background: linear-gradient(135deg, #4dabf7, #1c7ed6); box-shadow: 0 2px 8px rgba(24,100,171,0.15);">🅱️ Učim govorom</button>
+    </div>
+</div>
+
+<div id="gameContent" style="display:none;">
+<header>
+    <h1 role="button" tabindex="0" title="Povratak na početnu stranicu" onclick="goHome()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goHome();}" style="cursor:pointer">🐾 Učim životinje</h1>
+    <div class="star-counter" id="starCounter">⭐ <span id="starCount">0</span></div>
+    <div class="header-right">
+        <div class="lang-toggle">
+            <button class="lang-btn active" onclick="setLang('hr')">🇭🇷 HR</button>
+            <button class="lang-btn" onclick="setLang('en')">🇬🇧 EN</button>
+        </div>
+        <button class="settings-btn" onclick="toggleSettings()">⚙️ Glas</button>
+        <button class="settings-btn" onclick="resetProgress()">🔄 Reset</button>
+    </div>
+</header>
+
+<!-- MODE SELECTOR -->
+<div class="level-toggle">
+    <button class="mode-btn active" id="modeBtnA" onclick="setMode('A')">🅰️ Level A - Slušam</button>
+    <button class="mode-btn locked" id="modeBtnB" onclick="setMode('B')">🔒 Level B - Govorim</button>
+</div>
+<!-- LEVEL SELECTOR -->
+<div class="level-toggle">
+    <button class="level-btn active" id="levelBtn1" onclick="setLevel(1)">⭐ Level 1 - Lako</button>
+    <button class="level-btn locked" id="levelBtn2" onclick="setLevel(2)">🔒 Level 2 - Srednje</button>
+    <button class="level-btn locked" id="levelBtn3" onclick="setLevel(3)">🔒 Level 3 - Teško</button>
+</div>
+<div class="level-progress" id="levelProgress"></div>
+
+<!-- SETTINGS PANEL -->
+<div class="settings-panel" id="settingsPanel">
+    <h3>🎙️ Postavke glasa</h3>
+
+    <!-- HR panel -->
+    <div id="hrVoicePanel">
+        <div class="google-badge">✅ Google TTS (hr-HR) — prirodni hrvatski glas</div>
+        <div class="setting-row">
+            <label>Brzina:</label>
+            <input type="range" id="rateSliderHR" min="0.5" max="1.0" step="0.05" value="0.95"
+                   oninput="document.getElementById('rateValHR').textContent=this.value">
+            <span class="range-val" id="rateValHR">0.95</span>
+        </div>
+        <button class="test-voice-btn" onclick="testVoice()">▶ Testiraj glas</button>
+        <p class="voice-tip">💡 Google TTS koristi isti glas kao Google Prevoditelj — zvuči prirodno i bez instalacije. Treba internet vezu.</p>
+    </div>
+
+    <!-- EN panel -->
+    <div id="enVoicePanel" style="display:none">
+        <div class="setting-row">
+            <label>Glas:</label>
+            <select id="voiceSelect" onchange="onVoiceChange()"></select>
+        </div>
+        <div class="setting-row">
+            <label>Brzina:</label>
+            <input type="range" id="rateSlider" min="0.5" max="1.4" step="0.05" value="0.95"
+                   oninput="document.getElementById('rateVal').textContent=this.value; saveSettings()">
+            <span class="range-val" id="rateVal">0.95</span>
+        </div>
+        <div class="setting-row">
+            <label>Visina tona:</label>
+            <input type="range" id="pitchSlider" min="0.5" max="2.0" step="0.05" value="1.5"
+                   oninput="document.getElementById('pitchVal').textContent=this.value; saveSettings()">
+            <span class="range-val" id="pitchVal">1.5</span>
+        </div>
+        <button class="test-voice-btn" onclick="testVoice()">▶ Testiraj glas</button>
+    </div>
+    
+    <hr style="border: none; border-top: 2px solid #ddd; margin: 20px 0;">
+    
+    <h3>💾 Upravljanje progresom</h3>
+    <div style="text-align: center; margin-top: 12px;">
+        <button class="test-voice-btn" style="background: linear-gradient(135deg, #ff6b9d, #ee5a6f); box-shadow: 0 2px 6px rgba(201,42,42,0.15);" onclick="resetProgress()">
+            🔄 Reset sav progres
+        </button>
+        <p style="font-size: 0.85rem; color: #888; margin-top: 8px;">
+            Obriši sve zvjezdice i vrati igru na početak
+        </p>
+    </div>
+</div>
+
+<div id="aList"></div>
+<div id="aOverlay" onclick="closeOverlayA()">
+    <button id="aOverlayClose" onclick="closeOverlayA()">✖</button>
+    <img id="aOverlayImg" src="" alt="">
+    <div id="aOverlayText"></div>
+    <div id="aOverlaySound"></div>
+    <button id="aOverlayRepeat" onclick="event.stopPropagation(); playA()">🔊</button>
+    <button id="aOverlayCloseBtn" onclick="closeOverlayA()">Zatvori</button>
+</div>
+
+<!-- MAIN CARD -->
+<div class="card">
+    <img class="animal-display" id="animalDisplay" src="images/dog.jpg" alt="Životinja">
+
+    <div class="animal-position" id="animalPosition" aria-live="polite">
+        <span id="animalPositionText"></span>
+        <div class="animal-position-track" aria-hidden="true"><div class="animal-position-fill" id="animalPositionFill"></div></div>
+    </div>
+    <div class="question" id="questionText">Koja je ovo životinja?</div>
+    <button class="speak-btn" id="speakBtn" onclick="speakQuestion()">🔊 Ponovi pitanje</button>
+
+    <button class="mic-btn" id="micBtn" onclick="toggleListen()">🎤</button>
+    <div class="status-text" id="statusText">Pritisni mikrofon i reci ime životinje</div>
+    <div class="heard-text" id="heardText"></div>
+    <div class="attempts-dots" id="attemptsDots"></div>
+
+    <div class="feedback" id="feedback"></div>
+    <div class="result-label" id="resultLabel"></div>
+    <div class="star-award-message" id="starAwardMessage" aria-live="polite"></div>
+    <div class="answer-reveal" id="answerReveal"></div>
+
+    <div class="stars-row" id="starsRow"></div>
+
+    <div class="warning-box" id="warningBox"></div>
+</div>
+</div>
+
+<script>
+// ─── Životinje ───────────────────────────────────────────────────────────────
+// Level 1 - Lako: domaće životinje (6 komada)
+const ANIMALS_LEVEL1 = [
+    { hr:'pas',   en:'dog',    img:'images/dog.jpg',  alts_hr:['pas','psu','psić','psica','pse','psic','pasić','pesek','av av'],     alts_en:['doggy','puppy','doggie','woof'], level:1 },
+    { hr:'mačka', en:'cat',    img:'images/cat.jpg',  alts_hr:['maca','macica','mačke','mački','mačku','maka','macka','mjau'],      alts_en:['kitty','kitten','pussy','meow'], level:1 },
+    { hr:'riba',  en:'fish',   img:'images/fish.jpg',  alts_hr:['ribu','ribi','ribica','ribče','ribe'],                       alts_en:['fishy','fishes'], level:1 },
+    { hr:'ptica', en:'bird',   img:'images/bird.jpg',  alts_hr:['pticu','ptici','ptičica','ptico','ptic','ptica','птица','птичица'],     alts_en:['birdie','birdy','tweet'], level:1 },
+    { hr:'krava', en:'cow',    img:'images/cow.jpg',  alts_hr:['kravu','kravi','kravice','kravica','mu', 'kava'],                    alts_en:['cattle','bull','calf','moo'], level:1 },
+    { hr:'svinja', en:'pig',   img:'images/pig.jpg',  alts_hr:['svinju','svinji','prasac','prase','praščić','rok rok','oink'],     alts_en:['piggy','piglet','hog','swine','oink'], level:1 }
+];
+
+// Level 2 - Srednje: farma + vrt (6 komada)
+const ANIMALS_LEVEL2 = [
+    { hr:'zec',   en:'rabbit', img:'images/rabbit.jpg',  alts_hr:['zeca','zecu','kunić','kuniću','zeče','zunic','zeko','zečić'],alts_en:['bunny','hare','bun'], level:2 },
+    { hr:'konj',  en:'horse',  img:'images/horse.jpg',  alts_hr:['konja','konju','kobila','konjić','horse'],                     alts_en:['pony','stallion','mare','horsie'], level:2 },
+    { hr:'patka', en:'duck',   img:'images/duck.jpg',  alts_hr:['patku','patki','patak','pače','kva kva','quack'],     alts_en:['duckling','mallard','quack'], level:2 },
+    { hr:'pčela',  en:'bee',    img:'images/bee.jpg',  alts_hr:['pčelu','pčeli','pčelica','pcela','buba','bzz','zum zum'],     alts_en:['bumblebee','honeybee','buzz'], level:2 },
+    { hr:'leptir', en:'butterfly', img:'images/butterfly.jpg',  alts_hr:['leptira','leptiru','leptirić','leptir','leptiric'],     alts_en:['butterflies','moth'], level:2 },
+    { hr:'kokoš', en:'chicken', img:'images/chicken.jpg',  alts_hr:['kokoši','kokošku','kokica','pile','piletina','kok kok','ko ko'],     alts_en:['hen','chick','rooster','cluck'], level:2 }
+];
+
+// Level 3 - Teško: egzotične/divlje životinje (8 komada)
+const ANIMALS_LEVEL3 = [
+    { hr:'lav',   en:'lion',   img:'images/lion.jpg',  alts_hr:['lava','lavu','lavica','lavić','rey','rawr'],     alts_en:['lioness','cub','roar'], level:3 },
+    { hr:'slon',  en:'elephant', img:'images/elephant.jpg',  alts_hr:['slona','slonu','slonić','slonica','slonje'],     alts_en:['elephants','jumbo','dumbo','ellie'], level:3 },
+    { hr:'medvjed', en:'bear',  img:'images/bear.jpg',  alts_hr:['medvjeda','medvjedu','medo','medica','medu','medvjedić'],     alts_en:['teddy','grizzly','cub','teddy bear'], level:3 },
+    { hr:'majmun', en:'monkey', img:'images/monkey.jpg',  alts_hr:['majmuna','majmunu','majmunčić','opica','šimpanza','ih ih ah ah'],     alts_en:['ape','chimp','gorilla','baboon'], level:3 },
+    { hr:'žirafa', en:'giraffe', img:'images/giraffe.jpg',  alts_hr:['žirafu','žirafi','žirafić','girafa','dzirafa'],     alts_en:['baby giraffe'], level:3 },
+    { hr:'dupin',  en:'dolphin', img:'images/dolphin.jpg',  alts_hr:['dupina','dupinu','dupinčić','delfin','delfina'],     alts_en:['dolphins','flipper','porpoise'], level:3 },
+    { hr:'vuk', en:'wolf', img:'images/woolf.jpg', alts_hr:['vuka','vuku','vuče','vučić','vučića','vučica','vučicu','vukovi'], alts_en:['wolves','wolf cub','wolf pup'], level:3 },
+    { hr:'zebra', en:'zebra', img:'images/zebra.jpg', alts_hr:['zebru','zebri','zebrice','zebrica'], alts_en:['zebras'], level:3 }
+];
+
+let ANIMALS = ANIMALS_LEVEL1; // Početno level 1
+
+const MAX_ATTEMPTS = 3;
+
+const T = {
+    hr: {
+        question: 'Koja je ovo životinja?',
+        speakBtn: '🔊 Ponovi pitanje',
+        nextBtn:  'Sljedeća →',
+        prompt:   'Pritisni mikrofon i reci ime životinje',
+        listening:'🎤 Slušam te...',
+        correct:  ['Bravo! Točno!','Super!','Odlično!','Izvrsno!','Fantastično!'],
+        emoji_ok: ['🌟','🎉','⭐','🏆','🥳'],
+        tryAgain: n => `Pokušaj opet! (${n}/${MAX_ATTEMPTS})`,
+        wrongFinal: 'Odgovor je',
+        heard:    'Čuo sam:',
+        noMic:    '⚠️ Tvoj preglednik ne podržava prepoznavanje glasa. Koristi <strong>Google Chrome</strong>.',
+        noPerm:   '❌ Dopusti pristup mikrofonu — klikni na ikonu u adresnoj traci.',
+        testPhrase: 'Koja je ovo životinja? — pas, mačka, zec, konj, riba, ptica, krava, svinja, kokoš, patka, lav, slon, medvjed, majmun, žirafa, dupin, pčela, leptir.',
+    },
+    en: {
+        question: 'What animal is this?',
+        speakBtn: '🔊 Repeat question',
+        nextBtn:  'Next →',
+        prompt:   'Press the mic and say the animal name',
+        listening:'🎤 Listening...',
+        correct:  ['Correct!','Great job!','Excellent!','Amazing!','Fantastic!'],
+        emoji_ok: ['🌟','🎉','⭐','🏆','🥳'],
+        tryAgain: n => `Try again! (${n}/${MAX_ATTEMPTS})`,
+        wrongFinal: 'The answer is',
+        heard:    'I heard:',
+        noMic:    '⚠️ Your browser does not support speech recognition. Use <strong>Google Chrome</strong>.',
+        noPerm:   '❌ Please allow microphone access (click the lock in the address bar).',
+        testPhrase: 'What animal is this? Dog, cat, rabbit, horse, fish, bird, cow, pig, chicken, duck, lion, elephant, bear, monkey, giraffe, dolphin, bee, butterfly.',
+    }
+};
+
+// ─── Stanje ──────────────────────────────────────────────────────────────────
+let lang        = 'hr';
+let animal      = null;
+let attempts    = 0;
+let answered    = false;
+let listening   = false;
+let scoreOk     = 0;
+let scoreErr    = 0;
+let starCount   = 0;
+let queue       = [];
+let qi          = 0;
+let recognition = null;
+let mistakeAnimals = []; // Životnje sa greškama
+let isRetryMode = false; // Da li se u modus ponavljanja
+let originalQueue = []; // Originalni red za ponavljanje
+let currentLevel = 1; // Trenutni level
+let level1Solved = new Set(); // Životinje iz Level 1 koje su točno odgovorene
+let level2Solved = new Set(); // Životinje iz Level 2 koje su točno odgovorene
+let level3Solved = new Set(); // Životinje iz Level 3 koje su točno odgovorene
+let level2Unlocked = false; // Da li je Level 2 otključan
+let level3Unlocked = false; // Da li je Level 3 otključan
+let level1Complete = false; // Da li je Level 1 kompletan - zaustavlja igru
+let level2Complete = false; // Da li je Level 2 kompletan - zaustavlja igru
+let level3Complete = false; // Da li je Level 3 kompletan - zaustavlja igru
+let mode = 'A'; // 'A' = slušanje, 'B' = govorenje
+let aDone = new Set(); // Završeni levelovi u modu A (1,2,3)
+let aSeen = new Set(); // Životinje prikazane u trenutnom A levelu
+let aToken = 0;
+let aFinished = false;
+
+const SOUNDS = {
+    dog:{hr:'vau vau',en:'woof woof'}, cat:{hr:'mijau mijau',en:'meow meow'}, fish:{hr:'blub blub',en:'blub blub'},
+    bird:{hr:'cvrk cvrk',en:'tweet tweet'}, cow:{hr:'muuu muuu',en:'moooo moooo'}, pig:{hr:'groc groc',en:'oink oink'},
+    chicken:{hr:'kokodak kokodak',en:'cluck cluck'}, rabbit:{hr:'tup tup tup',en:'thump thump'}, horse:{hr:'ihaha ihaha',en:'neigh neigh'},
+    duck:{hr:'kva kva',en:'quack quack'}, bee:{hr:'bzzz bzzz',en:'bzzz bzzz'}, butterfly:{hr:'frrr frrr',en:'flap flap'},
+    lion:{hr:'rrraaar',en:'roooaar'}, elephant:{hr:'tooot tooot',en:'toot toot'}, bear:{hr:'grrr grrr',en:'grrr grrr'},
+    monkey:{hr:'u u a a',en:'ooh ooh aah aah'}, giraffe:{hr:'hmm hmm',en:'hmm hmm'}, dolphin:{hr:'ik ik ik',en:'eek eek eek'},
+    wolf:{hr:'auuuu auuuu',en:'awooo awooo'}, zebra:{hr:'ihaha ihaha',en:'neigh neigh'}
+};
+
+// TTS postavke
+let selectedVoice = null;
+let speechRate  = 0.95;
+let speechPitch = 1.5;
+let allVoices   = [];
+
+// ─── ČUVANJE PROGRESA (localStorage) ─────────────────────────────────────────
+function saveProgress() {
+    const progress = {
+        currentLevel: currentLevel,
+        starCount: starCount,
+        level1Solved: Array.from(level1Solved),
+        level2Solved: Array.from(level2Solved),
+        level3Solved: Array.from(level3Solved),
+        level2Unlocked: level2Unlocked,
+        level3Unlocked: level3Unlocked,
+        mode: mode,
+        aDone: Array.from(aDone),
+        timestamp: new Date().toISOString()
+    };
+    localStorage.setItem('ucilica_progress', JSON.stringify(progress));
+    console.log('💾 Progres spremljen:', progress);
+}
+
+function loadProgress() {
+    const saved = localStorage.getItem('ucilica_progress');
+    if (!saved) {
+        console.log('📂 Nema spremljenog progresa - počinjem ispočetka');
+        return false;
+    }
+    
+    try {
+        const progress = JSON.parse(saved);
+        currentLevel = progress.currentLevel || 1;
+        starCount = progress.starCount || 0;
+        level1Solved = new Set(progress.level1Solved || []);
+        level2Solved = new Set(progress.level2Solved || []);
+        level3Solved = new Set(progress.level3Solved || []);
+        level2Unlocked = progress.level2Unlocked || false;
+        level3Unlocked = progress.level3Unlocked || false;
+        mode = progress.mode === 'B' ? 'B' : 'A';
+        aDone = new Set(progress.aDone || []);
+        
+        // Ažuriraj UI
+        document.getElementById('starCount').textContent = starCount;
+        
+        console.log('📂 Progres učitan:', progress);
+        return true;
+    } catch (e) {
+        console.error('❌ Greška pri učitavanju progresa:', e);
+        return false;
+    }
+}
+
+function resetProgress() {
+    if (confirm('Jeste li sigurni da želite resetirati sav progres? Izgubit ćete sve zvjezdice i napredak!')) {
+        localStorage.removeItem('ucilica_progress');
+        location.reload(); // Osvježi stranicu
+    }
+}
+
+function hasProgress() {
+    return localStorage.getItem('ucilica_progress') !== null;
+}
+
+// ─── Glasovi (EN — Web Speech API) ───────────────────────────────────────────
+const VOICE_PRIORITY_KEYWORDS = ['online','natural','neural','premium','enhanced','zira','hazel'];
+
+function loadVoices() {
+    allVoices = window.speechSynthesis.getVoices();
+    if (!allVoices.length) return;
+
+    const sel = document.getElementById('voiceSelect');
+    sel.innerHTML = '';
+
+    const enVoices = [...allVoices]
+        .filter(v => v.lang.toLowerCase().startsWith('en'))
+        .sort((a,b) => {
+            const score = v => VOICE_PRIORITY_KEYWORDS.some(k => v.name.toLowerCase().includes(k)) ? 1 : 0;
+            return score(b) - score(a);
+        });
+
+    const toShow = enVoices.length ? enVoices : allVoices;
+    toShow.forEach((v, i) => {
+        const opt = document.createElement('option');
+        const star = VOICE_PRIORITY_KEYWORDS.some(k => v.name.toLowerCase().includes(k)) ? '⭐ ' : '';
+        opt.textContent = `${star}${v.name} (${v.lang})`;
+        opt.dataset.idx = allVoices.indexOf(v);
+        sel.appendChild(opt);
+    });
+    selectedVoice = allVoices[parseInt(toShow[0] && sel.options[0] && sel.options[0].dataset.idx)];
+}
+
+function onVoiceChange() {
+    const sel = document.getElementById('voiceSelect');
+    const idx = parseInt(sel.options[sel.selectedIndex].dataset.idx);
+    selectedVoice = allVoices[idx];
+    saveSettings();
+}
+
+function saveSettings() {
+    speechRate  = parseFloat(document.getElementById('rateSlider').value);
+    speechPitch = parseFloat(document.getElementById('pitchSlider').value);
+}
+
+function testVoice() { say(T[lang].testPhrase); }
+
+// ─── TTS ─────────────────────────────────────────────────────────────────────
+let currentAudio = null;
+let audioContext = null;
+
+function getAudioContext() {
+    if (!audioContext) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) audioContext = new AudioCtx();
+    }
+    return audioContext;
+}
+
+function applyChildVoiceFilter(audio) {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+    if (ctx.state !== 'running') {
+        ctx.resume();
+        return;
+    }
+    
+    try {
+        const source = ctx.createMediaElementAudioSource(audio);
+        
+        // Treble boost filter za dječji glas - pojačaj visoke frekvencije
+        const trebleBoost = ctx.createBiquadFilter();
+        trebleBoost.type = 'highShelf';
+        trebleBoost.frequency.value = 3000; // 3kHz - viši tonovi
+        trebleBoost.gain.value = 8; // Pojačaj za 8dB
+        
+        source.connect(trebleBoost);
+        trebleBoost.connect(ctx.destination);
+    } catch (e) {
+        // Fallback ako Web Audio API ne radi
+        console.log('Web Audio API nije dostupan');
+    }
+}
+
+function say(text, onEnd) {
+    if (lang === 'hr') {
+        sayGoogleTTS(text, onEnd);
+    } else {
+        sayWebSpeech(text, onEnd);
+    }
+}
+
+function sayGoogleTTS(text, onEnd) {
+    // Zaustavi prethodni audio
+    if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+
+    const rate = parseFloat(document.getElementById('rateSliderHR').value) || 0.95;
+    const speed = rate <= 0.7 ? 0.7 : 1; // Google TTS ima samo 0.7 ili 1.0
+    const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=hr&client=tw-ob&ttsspeed=${speed}`;
+
+    const audio = new Audio(url);
+    currentAudio = audio;
+    
+    // Primijeni dječji glas filter
+    audio.crossOrigin = 'anonymous';
+    audio.addEventListener('play', () => applyChildVoiceFilter(audio), { once: true });
+    
+    // Pozovi callback kad se audio završi
+    const fallback = once(() => sayWebSpeech(text, onEnd));
+    audio.onended = () => { if (onEnd) onEnd(); };
+    audio.onerror = fallback;
+    audio.play().catch(fallback);
+}
+
+function sayWebSpeech(text, onEnd) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+
+    const u = new SpeechSynthesisUtterance(text);
+    if (selectedVoice && lang !== 'hr') {
+        u.voice = selectedVoice;
+        u.lang  = selectedVoice.lang;
+    } else {
+        u.lang = lang === 'hr' ? 'hr-HR' : 'en-US';
+    }
+    u.rate  = speechRate;
+    u.pitch = speechPitch;
+    
+    // Pozovi callback kad se TTS završi
+    if (onEnd) {
+        u.onend = onEnd;
+        u.onerror = onEnd;
+    }
+    
+    window.speechSynthesis.speak(u);
+}
+
+function speakQuestion() {
+    if (mode === 'A') { if (animal) playA(); return; }
+    say(T[lang].question);
+}
+
+// ─── Settings panel ───────────────────────────────────────────────────────────
+function toggleSettings() {
+    const p = document.getElementById('settingsPanel');
+    p.classList.toggle('open');
+    if (p.classList.contains('open') && lang === 'en') loadVoices();
+}
+
+// ─── Level ────────────────────────────────────────────────────────────────────
+function isUnlocked(m, level) {
+    if (m === 'A') return level === 1 || aDone.has(level - 1);
+    if (!aDone.has(level)) return false;
+    if (level === 2) return level2Unlocked;
+    if (level === 3) return level3Unlocked;
+    return true;
+}
+
+function stopAudioNow() {
+    if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+}
+
+function once(fn) {
+    let called = false;
+    return () => { if (called) return; called = true; fn(); };
+}
+
+function setMode(m) {
+    if (!isUnlocked(m, 1)) {
+        document.getElementById('levelProgress').textContent = lang === 'hr'
+            ? '🔒 Prvo riješi Level 1 u modu A da otključaš Level B'
+            : '🔒 Finish Level 1 in mode A to unlock Level B';
+        return;
+    }
+    if (m === mode && document.body.classList.contains('mode-' + m.toLowerCase())) return;
+    aToken++;
+    stopListen();
+    stopAudioNow();
+    mode = m;
+    setLevel(isUnlocked(m, currentLevel) ? currentLevel : 1, false);
+    nextAnimal();
+}
+
+function updateModeUI() {
+    document.body.classList.toggle('mode-a', mode === 'A');
+    document.getElementById('modeBtnA').classList.toggle('active', mode === 'A');
+    document.getElementById('modeBtnB').classList.toggle('active', mode === 'B');
+    const bOpen = isUnlocked('B', 1);
+    const btnB = document.getElementById('modeBtnB');
+    btnB.classList.toggle('locked', !bOpen);
+    btnB.textContent = (bOpen ? '🅱️' : '🔒') + (lang === 'hr' ? ' Level B - Govorim' : ' Level B - I speak');
+    document.getElementById('modeBtnA').textContent = '🅰️' + (lang === 'hr' ? ' Level A - Slušam' : ' Level A - I listen');
+    document.getElementById('speakBtn').textContent = mode === 'A'
+        ? (lang === 'hr' ? '🔊 Ponovi' : '🔊 Repeat')
+        : T[lang].speakBtn;
+}
+
+function thisIs(a) {
+    if (lang === 'hr') return 'Ovo je ' + a.hr;
+    return 'This is ' + (/^[aeiou]/.test(a.en) ? 'an ' : 'a ') + a.en;
+}
+
+function showListA() {
+    aToken++;
+    stopAudioNow();
+    closeOverlayA();
+    animal = null;
+    const list = document.getElementById('aList');
+    list.innerHTML = '';
+    queue.forEach(a => {
+        const item = document.createElement('div');
+        item.className = 'a-item' + (aSeen.has(a.hr) ? ' seen' : '');
+        item.dataset.hr = a.hr;
+        item.innerHTML = '<span class="a-check">✅</span><img src="' + a.img + '" alt="">';
+        item.onclick = () => openAnimalA(a);
+        list.appendChild(item);
+    });
+    updateLevelProgress();
+}
+
+function openAnimalA(a) {
+    animal = a;
+    aSeen.add(a.hr);
+    const el = document.querySelector('.a-item[data-hr="' + a.hr + '"]');
+    if (el) el.classList.add('seen');
+    document.getElementById('aOverlayImg').src = a.img;
+    document.getElementById('aOverlay').classList.add('open');
+    updateLevelProgress();
+    playA();
+}
+
+function closeOverlayA() {
+    const o = document.getElementById('aOverlay');
+    if (!o.classList.contains('open')) return;
+    o.classList.remove('open');
+    aToken++;
+    stopAudioNow();
+    if (mode === 'A' && !aFinished && aSeen.size >= queue.length) finishLevelA();
+}
+
+function renderA() {
+    document.getElementById('aOverlayText').textContent = thisIs(animal);
+    document.getElementById('aOverlaySound').textContent = '🔊 ' + SOUNDS[animal.en][lang];
+    document.getElementById('aOverlayRepeat').textContent = lang === 'hr' ? '🔊 Ponovi' : '🔊 Repeat';
+    document.getElementById('aOverlayCloseBtn').textContent = lang === 'hr' ? 'Zatvori' : 'Close';
+}
+
+function playAnimalSound(a, done) {
+    const sound = SOUNDS[a.en][lang];
+    const fallback = once(() => say(sound, done));
+    const finish = once(done);
+    try {
+        const audio = new Audio('sounds/' + a.en + '.mp3');
+        currentAudio = audio;
+        audio.onended = finish;
+        audio.onerror = fallback;
+        audio.play().catch(fallback);
+    } catch (e) {
+        fallback();
+    }
+}
+
+function playA() {
+    if (!animal) return;
+    const t = ++aToken;
+    stopAudioNow();
+    renderA();
+    say(thisIs(animal), once(() => {
+        if (t !== aToken) return;
+        playAnimalSound(animal, () => {});
+    }));
+}
+
+function finishLevelA() {
+    if (aFinished) return;
+    aFinished = true;
+    const level = currentLevel;
+    const first = !aDone.has(level);
+    aDone.add(level);
+    saveProgress();
+    updateLevelButtonLabels();
+    updateModeUI();
+
+    const hr = lang === 'hr';
+    const msg1 = hr ? `🎉 Level A${level} je riješen!` : `🎉 Level A${level} complete!`;
+    const msg2 = hr ? `Level B${level} je otključan.` : `Level B${level} is unlocked.`;
+    if (first) {
+        celebrateLevelUp(level, null, `🎉 Level A${level} ${hr ? 'RIJEŠEN' : 'COMPLETE'}! 🎉<br><span style="font-size:1rem;font-weight:600;">${msg2}</span>`);
+    }
+    document.getElementById('levelProgress').textContent = msg1 + ' ' + msg2;
+    say(msg1 + ' ' + msg2);
+}
+
+function updateLevelProgress() {
+    const el = document.getElementById('levelProgress');
+    if (!el) return;
+
+    if (mode === 'A') {
+        const total = [ANIMALS_LEVEL1, ANIMALS_LEVEL2, ANIMALS_LEVEL3][currentLevel - 1].length;
+        if (aFinished) {
+            el.textContent = lang === 'hr'
+                ? `🎉 Level A${currentLevel} je riješen! Level B${currentLevel} je otključan.`
+                : `🎉 Level A${currentLevel} complete! Level B${currentLevel} is unlocked.`;
+            return;
+        }
+        el.textContent = lang === 'hr'
+            ? `🅰️ Klikni na svaku životinju da otključaš Level B${currentLevel} (${aSeen.size}/${total})`
+            : `🅰️ Tap every animal to unlock Level B${currentLevel} (${aSeen.size}/${total})`;
+        return;
+        el.textContent = lang === 'hr'
+            ? `🅰️ Pogledaj i poslušaj sve životinje u Level ${currentLevel} da otključaš Level B${currentLevel} (${aSeen.size}/${total})`
+            : `🅰️ Watch and listen to all Level ${currentLevel} animals to unlock Level B${currentLevel} (${aSeen.size}/${total})`;
+        return;
+    }
+    
+    if (currentLevel === 1 && !level2Unlocked) {
+        const done = level1Solved.size;
+        const total = ANIMALS_LEVEL1.length;
+        el.textContent = lang === 'hr'
+            ? `📘 Riješi sve životinje iz Level 1 da otključaš Level 2 (${done}/${total})`
+            : `📘 Solve all Level 1 animals to unlock Level 2 (${done}/${total})`;
+    } else if (currentLevel === 2 && !level3Unlocked) {
+        const done = level2Solved.size;
+        const total = ANIMALS_LEVEL2.length;
+        el.textContent = lang === 'hr'
+            ? `📗 Riješi sve životinje iz Level 2 da otključaš Level 3 (${done}/${total})`
+            : `📗 Solve all Level 2 animals to unlock Level 3 (${done}/${total})`;
+    } else if (currentLevel === 3 && !level3Complete) {
+        const done = level3Solved.size;
+        const total = ANIMALS_LEVEL3.length;
+        el.textContent = lang === 'hr'
+            ? `📕 Riješi sve životinje iz Level 3 da završiš igru! (${done}/${total})`
+            : `📕 Solve all Level 3 animals to complete the game! (${done}/${total})`;
+    } else {
+        el.textContent = '';
+    }
+}
+
+function celebrateLevelUp(completedLevel, nextLevel, customHtml) {
+    // Konfeti / padajuće zvjezdice preko cijelog ekrana
+    const layer = document.createElement('div');
+    layer.className = 'confetti-layer';
+    document.body.appendChild(layer);
+
+    const pieces = ['⭐', '🌟', '✨', '🎉', '🎊'];
+    const colors = ['#ffd43b', '#ff6b6b', '#51cf66', '#4dabf7', '#da77f2'];
+    const count = 70;
+
+    for (let i = 0; i < count; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti-piece';
+        const isEmoji = Math.random() < 0.6;
+        if (isEmoji) {
+            el.textContent = pieces[Math.floor(Math.random() * pieces.length)];
+            el.style.fontSize = (14 + Math.random() * 20) + 'px';
+        } else {
+            el.style.width = el.style.height = (6 + Math.random() * 8) + 'px';
+            el.style.background = colors[Math.floor(Math.random() * colors.length)];
+            el.style.borderRadius = Math.random() < 0.5 ? '50%' : '2px';
+        }
+        const left = Math.random() * 100;
+        el.style.left = left + 'vw';
+        el.style.setProperty('--drift', (Math.random() * 160 - 80) + 'px');
+        el.style.setProperty('--spin', (Math.random() * 720 - 360) + 'deg');
+        const duration = 2.2 + Math.random() * 1.8;
+        const delay = Math.random() * 0.6;
+        el.style.animationDuration = duration + 's';
+        el.style.animationDelay = delay + 's';
+        layer.appendChild(el);
+    }
+
+    setTimeout(() => layer.remove(), 4500);
+
+    // Velika poruka na sredini ekrana
+    const banner = document.createElement('div');
+    banner.className = 'level-complete-banner';
+    
+    if (customHtml) {
+        banner.innerHTML = customHtml;
+    } else if (nextLevel) {
+        // Otključavanje novog levela
+        banner.innerHTML = lang === 'hr'
+            ? `🎉 Level ${completedLevel} RIJEŠEN! 🎉<br><span style="font-size:1rem;font-weight:600;">Level ${nextLevel} je otključan!</span>`
+            : `🎉 Level ${completedLevel} COMPLETE! 🎉<br><span style="font-size:1rem;font-weight:600;">Level ${nextLevel} unlocked!</span>`;
+    } else {
+        // Kraj igre
+        banner.innerHTML = lang === 'hr'
+            ? '🏆 SVI LEVELI ZAVRŠENI! 🏆<br><span style="font-size:1rem;font-weight:600;">Odlično! Klikni bilo koji level za novu igru.</span>'
+            : '🏆 ALL LEVELS COMPLETE! 🏆<br><span style="font-size:1rem;font-weight:600;">Great! Click any level to play again.</span>';
+    }
+    
+    document.body.appendChild(banner);
+    setTimeout(() => banner.remove(), 2700);
+}
+
+function unlockLevel2() {
+    if (level2Unlocked || level1Complete) return;
+    level2Unlocked = true;
+    level1Complete = true; // Zaustavi igru
+    
+    // 💾 SPREMI PROGRES
+    saveProgress();
+    
+    celebrateLevelUp(1, 2);
+    
+    const btn2 = document.getElementById('levelBtn2');
+    btn2.classList.remove('locked');
+    btn2.textContent = lang === 'hr' ? '⭐⭐ Level 2 - Srednje' : '⭐⭐ Level 2 - Medium';
+    
+    // Prikaži završetak Levela 1 i najavi automatski početak Levela 2.
+    const msg1 = lang === 'hr' ? '🎉 Sve životinje iz Levela 1 su riješene!' : '🎉 All Level 1 animals are complete!';
+    const go2 = isUnlocked('B', 2);
+    const msg2 = go2
+        ? (lang === 'hr' ? 'Krećemo na Level 2!' : 'Starting Level 2!')
+        : (lang === 'hr' ? 'Za Level B2 prvo riješi Level A2!' : 'To unlock Level B2, finish Level A2 first!');
+    
+    document.getElementById('animalDisplay').src = ''; // Ukloni sliku
+    document.getElementById('feedback').textContent = '🎉';
+    document.getElementById('resultLabel').textContent = msg1;
+    document.getElementById('resultLabel').className = 'result-label correct';
+    document.getElementById('statusText').textContent = msg2;
+    document.getElementById('statusText').style.fontSize = '1.1rem';
+    document.getElementById('statusText').style.fontWeight = '700';
+    document.getElementById('statusText').style.color = '#37b24d';
+    
+    document.getElementById('micBtn').disabled = true;
+    
+    updateLevelProgress();
+    say(msg1 + '. ' + msg2);
+    if (go2) setTimeout(() => setLevel(2), 3000);
+}
+
+function unlockLevel3() {
+    if (level3Unlocked || level2Complete) return;
+    level3Unlocked = true;
+    level2Complete = true; // Zaustavi igru
+    
+    // 💾 SPREMI PROGRES
+    saveProgress();
+    
+    celebrateLevelUp(2, 3);
+    
+    const btn3 = document.getElementById('levelBtn3');
+    btn3.classList.remove('locked');
+    btn3.textContent = lang === 'hr' ? '⭐⭐⭐ Level 3 - Teško' : '⭐⭐⭐ Level 3 - Hard';
+    
+    // Prikaži poruku za završetak Level 2
+    const msg1 = lang === 'hr' ? '🎉 Level 2 RIJEŠEN!' : '🎉 Level 2 COMPLETED!';
+    const go3 = isUnlocked('B', 3);
+    const msg2 = go3
+        ? (lang === 'hr' ? 'Klikni na Level 3 za najveći izazov!' : 'Click Level 3 for the ultimate challenge!')
+        : (lang === 'hr' ? 'Za Level B3 prvo riješi Level A3!' : 'To unlock Level B3, finish Level A3 first!');
+    
+    document.getElementById('animalDisplay').src = ''; // Ukloni sliku
+    document.getElementById('feedback').textContent = '🎉';
+    document.getElementById('resultLabel').textContent = msg1;
+    document.getElementById('resultLabel').className = 'result-label correct';
+    document.getElementById('statusText').textContent = msg2;
+    document.getElementById('statusText').style.fontSize = '1.1rem';
+    document.getElementById('statusText').style.fontWeight = '700';
+    document.getElementById('statusText').style.color = '#37b24d';
+    
+    document.getElementById('micBtn').disabled = true;
+    
+    updateLevelProgress();
+    say(msg1 + '. ' + msg2);
+}
+
+function completeLevel2() {
+    if (level2Complete) return;
+    // Samo pozovi unlockLevel3 jer to radi sve potrebno
+    unlockLevel3();
+}
+
+function completeLevel3() {
+    if (level3Complete) return;
+    level3Complete = true; // Zaustavi igru
+    
+    // 💾 SPREMI PROGRES
+    saveProgress();
+    
+    celebrateLevelUp(3, null); // null = nema više levela, kraj igre
+    
+    const msg1 = lang === 'hr' ? '🏆 Level 3 ZAVRŠEN! 🏆' : '🏆 Level 3 COMPLETED! 🏆';
+    const msg2 = lang === 'hr' 
+        ? 'BRAVO! Prošao si SVE levele! 🎊🎉' 
+        : 'BRAVO! You completed ALL levels! 🎊🎉';
+    
+    document.getElementById('animalDisplay').src = ''; // Ukloni sliku
+    document.getElementById('feedback').textContent = '🏆';
+    document.getElementById('resultLabel').textContent = msg1;
+    document.getElementById('resultLabel').className = 'result-label correct';
+    document.getElementById('statusText').textContent = msg2;
+    document.getElementById('statusText').style.fontSize = '1.3rem';
+    document.getElementById('statusText').style.fontWeight = '800';
+    document.getElementById('statusText').style.color = '#ffd700';
+    
+    document.getElementById('micBtn').disabled = true;
+    
+    say(msg1 + '. ' + msg2);
+}
+
+function setLevel(level, startImmediately = true) {
+    if (!isUnlocked(mode, level)) {
+        const el = document.getElementById('levelProgress');
+        const need = mode === 'B' && !aDone.has(level);
+        el.textContent = lang === 'hr'
+            ? (need ? `🔒 Prvo riješi Level A${level}` : `🔒 Level ${level} je zaključan`)
+            : (need ? `🔒 Finish Level A${level} first` : `🔒 Level ${level} is locked`);
+        return;
+    }
+    aToken++;
+    stopListen();
+    stopAudioNow();
+    aFinished = false;
+    aSeen = new Set();
+    currentLevel = level;
+    ANIMALS = level === 1 ? ANIMALS_LEVEL1 : level === 2 ? ANIMALS_LEVEL2 : ANIMALS_LEVEL3;
+    
+    // Resetuj igru
+    queue = shuffle(ANIMALS);
+    qi = 0;
+    mistakeAnimals = [];
+    isRetryMode = false;
+    scoreOk = 0;
+    scoreErr = 0;
+    level1Complete = false; // Dozvoli igri da se nastavi u novom levelu
+    level2Complete = false; // Dozvoli igri da se nastavi u novom levelu
+    level3Complete = false; // Dozvoli igri da se nastavi u novom levelu
+    if (mode === 'B') {
+        if (level === 1) level1Solved.clear();
+        if (level === 2) level2Solved.clear();
+        if (level === 3) level3Solved.clear();
+    }
+    updateModeUI();
+    document.getElementById('micBtn').disabled = false;
+    document.getElementById('starAwardMessage').textContent = '';
+    if (mode === 'B') {
+        document.getElementById('questionText').textContent = T[lang].question;
+        document.getElementById('statusText').textContent = T[lang].prompt;
+        document.getElementById('animalDisplay').src = '';
+    }
+    
+    // Ažuriraj UI
+    document.querySelectorAll('.level-btn').forEach((b, i) => {
+        b.classList.toggle('active', i + 1 === level);
+    });
+    
+    // Ažuriraj tekst dugmadi
+    updateLevelButtonLabels();
+    updateLevelProgress();
+    
+    // Resetuj status tekst
+    document.getElementById('statusText').style.fontSize = 'inherit';
+    document.getElementById('statusText').style.fontWeight = 'inherit';
+    document.getElementById('statusText').style.color = 'inherit';
+    
+    // 💾 SPREMI PROGRES
+    saveProgress();
+    
+    if (startImmediately) nextAnimal();
+}
+
+function updateLevelButtonLabels() {
+    const names = lang === 'hr' ? ['Lako', 'Srednje', 'Teško'] : ['Easy', 'Medium', 'Hard'];
+    for (let n = 1; n <= 3; n++) {
+        const btn = document.getElementById('levelBtn' + n);
+        const open = isUnlocked(mode, n);
+        btn.textContent = (open ? '⭐'.repeat(n) : '🔒') + ` Level ${n} - ${names[n - 1]}`;
+        btn.classList.toggle('locked', !open);
+    }
+}
+
+// ─── Jezik ────────────────────────────────────────────────────────────────────
+function setLang(l) {
+    lang = l;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.lang-btn[onclick="setLang('${l}')"]`).classList.add('active');
+
+    document.getElementById('questionText').textContent = T[l].question;
+    document.getElementById('speakBtn').textContent     = T[l].speakBtn;
+    document.getElementById('statusText').textContent   = T[l].prompt;
+    updateModeUI();
+
+    // Prikaži odgovarajući panel glasovnih postavki
+    document.getElementById('hrVoicePanel').style.display = l === 'hr' ? 'block' : 'none';
+    document.getElementById('enVoicePanel').style.display = l === 'en' ? 'block' : 'none';
+    
+    // Ažuriraj level dugmad
+    updateLevelButtonLabels();
+    updateLevelProgress();
+
+    if (l === 'en') loadVoices();
+    initRecognition();
+    if (mode === 'A') { updateLevelProgress(); if (animal) renderA(); }
+    else speakQuestion();
+}
+
+// ─── Speech recognition ───────────────────────────────────────────────────────
+function initRecognition() {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) {
+        showWarning(T[lang].noMic);
+        document.getElementById('micBtn').disabled = true;
+        return;
+    }
+    
+    // Inicijalizirati recognition samo prvi put
+    if (recognition) {
+        // Samo promijeni jezik, ne reinicijalizuj
+        recognition.lang = lang === 'hr' ? 'hr-HR' : 'en-US';
+        return;
+    }
+
+    recognition = new SR();
+    recognition.lang = lang === 'hr' ? 'hr-HR' : 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 6;
+    recognition.continuous = false;
+
+    recognition.onresult = e => {
+        const heard = [];
+        for (let i = 0; i < e.results[0].length; i++)
+            heard.push(e.results[0][i].transcript.toLowerCase().trim());
+        onHeard(heard);
+    };
+    recognition.onerror = e => {
+        stopListen();
+        if (e.error === 'not-allowed') showWarning(T[lang].noPerm);
+        else if (e.error === 'network') setText('status', '❌ Nema interneta za prepoznavanje glasa.');
+        else setText('status', T[lang].prompt);
+    };
+    recognition.onend = () => stopListen();
+}
+
+// ─── Mikrofon ─────────────────────────────────────────────────────────────────
+function toggleListen() {
+    if (answered) return;
+    listening ? stopListen() : startListen();
+}
+function startListen() {
+    if (listening || answered) return;
+    if (!recognition) initRecognition();
+    if (!recognition) return;
+    recognition.lang = lang === 'hr' ? 'hr-HR' : 'en-US';
+    listening = true;
+    document.getElementById('micBtn').classList.add('listening');
+    document.getElementById('statusText').textContent = T[lang].listening;
+    document.getElementById('heardText').textContent  = '';
+    try { 
+        recognition.start(); 
+    } catch(e) { 
+        // Ako start() baci grešku (npr. vec je aktivan), samo ignoriraj
+        console.log('Recognition already started');
+    }
+}
+function stopListen() {
+    if (!listening) return;
+    listening = false;
+    document.getElementById('micBtn').classList.remove('listening');
+    try {
+        recognition.stop();
+    } catch(e) {
+        console.log('Error stopping recognition');
+    }
+}
+
+// ─── Provjera odgovora ────────────────────────────────────────────────────────
+// Levenshtein distance - mjeri koliko su dvije riječi slične
+function similarity(a, b) {
+    const matrix = [];
+    for (let i = 0; i <= b.length; i++) {
+        matrix[i] = [i];
+    }
+    for (let j = 0; j <= a.length; j++) {
+        matrix[0][j] = j;
+    }
+    for (let i = 1; i <= b.length; i++) {
+        for (let j = 1; j <= a.length; j++) {
+            if (b.charAt(i-1) === a.charAt(j-1)) {
+                matrix[i][j] = matrix[i-1][j-1];
+            } else {
+                matrix[i][j] = Math.min(
+                    matrix[i-1][j-1] + 1,
+                    matrix[i][j-1] + 1,
+                    matrix[i-1][j] + 1
+                );
+            }
+        }
+    }
+    const distance = matrix[b.length][a.length];
+    const maxLen = Math.max(a.length, b.length);
+    return 1 - (distance / maxLen);
+}
+
+function isCorrect(spoken) {
+    // Ignoriši prazne stringove
+    if (!spoken || spoken.trim() === '') return false;
+    
+    const main = lang === 'hr' ? animal.hr : animal.en;
+    const alts = lang === 'hr' ? animal.alts_hr : animal.alts_en;
+    const all  = [main, ...alts].map(w => w.toLowerCase());
+    
+    spoken = spoken.toLowerCase().trim();
+    
+    // 1. Točan match ili sadrži/je sadržan (ali samo ako spoken ima barem 2 znaka)
+    if (spoken.length >= 2 && all.some(a => spoken === a || spoken.includes(a) || a.includes(spoken))) {
+        return true;
+    }
+    
+    // 2. Fuzzy match - za dječji glas koji ne izgovara savršeno
+    // Prihvati ako je riječ barem 70% slična (pomogne kod "maka" umjesto "mačka")
+    if (spoken.length >= 2) {
+        return all.some(a => similarity(a, spoken) >= 0.7);
+    }
+    
+    return false;
+}
+
+function onHeard(heardList) {
+    stopListen();
+    if (answered) return;
+    
+    // Filtriraj prazne stringove
+    heardList = heardList.filter(h => h && h.trim() !== '');
+    
+    if (heardList.length === 0) {
+        // Ništa nije čuo
+        document.getElementById('statusText').textContent = T[lang].prompt;
+        return;
+    }
+
+    const first = heardList[0];
+    document.getElementById('heardText').textContent = T[lang].heard + ' „' + first + '"';
+
+    const ok = heardList.some(h => isCorrect(h));
+
+    if (ok) {
+        answered = true; scoreOk++;
+        
+        // Ako je u retry modu, ukloni iz liste grešaka kada se dobro odgovori
+        if (isRetryMode) {
+            mistakeAnimals = mistakeAnimals.filter(a => a.hr !== animal.hr);
+        }
+
+        // Prati napredak u Level 1 za otključavanje Level 2
+        if (currentLevel === 1) {
+            level1Solved.add(animal.hr);
+            updateLevelProgress();
+            if (level1Solved.size >= ANIMALS_LEVEL1.length && mistakeAnimals.length === 0) {
+                unlockLevel2();
+            }
+        }
+        
+        // Prati napredak u Level 2 za otključavanje Level 3
+        if (currentLevel === 2) {
+            level2Solved.add(animal.hr);
+            if (level2Solved.size >= ANIMALS_LEVEL2.length && mistakeAnimals.length === 0) {
+                completeLevel2();
+            }
+        }
+        
+        // Prati napredak u Level 3 za završetak igre
+        if (currentLevel === 3) {
+            level3Solved.add(animal.hr);
+            if (level3Solved.size >= ANIMALS_LEVEL3.length && mistakeAnimals.length === 0) {
+                completeLevel3();
+            }
+        }
+        
+        // 💾 SPREMI PROGRES
+        saveProgress();
+
+        const ri = Math.floor(Math.random() * T[lang].correct.length);
+        const msg = T[lang].correct[ri];
+        const em  = T[lang].emoji_ok[ri];
+
+        document.getElementById('feedback').textContent    = '✅';
+        document.getElementById('resultLabel').textContent = msg + ' ' + em;
+        document.getElementById('resultLabel').className   = 'result-label correct';
+        document.getElementById('micBtn').disabled         = true;
+
+        const disp = document.getElementById('animalDisplay');
+        disp.classList.add('bounce');
+        setTimeout(() => disp.classList.remove('bounce'), 400);
+
+        awardStar();
+        say(msg);
+        
+        // Automatski učitaj sljedeću životnju nakon 2.5 sekunde
+        setTimeout(() => {
+            if (!level1Complete && !level2Complete && !level3Complete) {
+                nextAnimal();
+            }
+        }, 2500);
+    } else {
+        attempts++; renderDots();
+
+        if (attempts >= MAX_ATTEMPTS) {
+            answered = true; scoreErr++;
+            
+            // Spremi životnju sa greškama ako nije već sprema
+            if (!mistakeAnimals.find(a => a.hr === animal.hr)) {
+                mistakeAnimals.push(animal);
+            }
+
+            const name = lang === 'hr' ? animal.hr : animal.en;
+            document.getElementById('feedback').textContent    = '❌';
+            document.getElementById('resultLabel').textContent = T[lang].wrongFinal + ': ' + name.toUpperCase();
+            document.getElementById('resultLabel').className   = 'result-label wrong';
+            document.getElementById('micBtn').disabled         = true;
+
+            say(T[lang].wrongFinal + ': ' + name);
+            
+            // Automatski učitaj sljedeću životnju nakon 3 sekunde
+            setTimeout(() => {
+                if (!level1Complete && !level2Complete && !level3Complete) {
+                    nextAnimal();
+                }
+            }, 3000);
+        } else {
+            document.getElementById('feedback').textContent    = '❌';
+            document.getElementById('resultLabel').textContent = T[lang].tryAgain(attempts);
+            document.getElementById('resultLabel').className   = 'result-label wrong';
+
+            setTimeout(() => {
+                if (!answered) {
+                    document.getElementById('feedback').textContent    = '';
+                    document.getElementById('resultLabel').textContent = '';
+                    document.getElementById('resultLabel').className   = 'result-label';
+                    document.getElementById('statusText').textContent  = T[lang].prompt;
+                }
+            }, 1800);
+
+            say(T[lang].tryAgain(attempts).replace(/[()\/\d]/g,'').trim());
+        }
+    }
+}
+
+// ─── Sljedeća životinja ───────────────────────────────────────────────────────
+function shuffle(arr) {
+    const shuffled = [...arr];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
+
+function updateAnimalPosition() {
+    const totalInLevel = ANIMALS.length;
+    const positionText = document.getElementById('animalPositionText');
+    const positionFill = document.getElementById('animalPositionFill');
+    if (!positionText || !positionFill) return;
+
+    const currentPosition = Math.min(qi, queue.length);
+    const progressPercent = queue.length ? (currentPosition / queue.length) * 100 : 0;
+    positionFill.style.width = `${progressPercent}%`;
+    positionText.textContent = isRetryMode
+        ? (lang === 'hr'
+            ? `Ponavljanje ${currentPosition} od ${queue.length} · Level ${currentLevel}: ukupno ${totalInLevel}`
+            : `Review ${currentPosition} of ${queue.length} · Level ${currentLevel}: ${totalInLevel} total`)
+        : (lang === 'hr'
+            ? `Životinja ${currentPosition} od ${totalInLevel} · Level ${currentLevel}`
+            : `Animal ${currentPosition} of ${totalInLevel} · Level ${currentLevel}`);
+}
+
+function nextAnimal() {
+    if (mode === 'A') { showListA(); return; }
+    // Zaustavi se nakon završetka levela.
+    if (level1Complete || level2Complete || level3Complete) return;
+
+    // Svaka životinja se prikazuje jednom u glavnom krugu. Nakon toga ponavljaju
+    // se samo životinje koje još nisu točno odgovorene.
+    if (qi >= queue.length) {
+        if (mistakeAnimals.length > 0 && !isRetryMode) {
+            startRetryMode();
+            return;
+        }
+        if (isRetryMode && mistakeAnimals.length > 0) {
+            queue = shuffle(mistakeAnimals);
+            qi = 0;
+        } else {
+            if (currentLevel === 1 && level1Solved.size >= ANIMALS_LEVEL1.length) {
+                unlockLevel2();
+            } else if (currentLevel === 2 && level2Solved.size >= ANIMALS_LEVEL2.length) {
+                completeLevel2();
+            } else if (currentLevel === 3 && level3Solved.size >= ANIMALS_LEVEL3.length) {
+                completeLevel3();
+            } else {
+                document.getElementById('micBtn').disabled = true;
+                document.getElementById('statusText').textContent = lang === 'hr'
+                    ? `🎉 Level ${currentLevel} je riješen!`
+                    : `🎉 Level ${currentLevel} is complete!`;
+            }
+            return;
+        }
+    }
+
+    animal   = queue[qi++];
+    updateAnimalPosition();
+    attempts = 0;
+    answered = false;
+
+    document.getElementById('animalDisplay').src = animal.img;
+    document.getElementById('feedback').textContent      = '';
+    document.getElementById('resultLabel').textContent   = '';
+    document.getElementById('resultLabel').className     = 'result-label';
+    document.getElementById('heardText').textContent     = '';
+    document.getElementById('answerReveal').textContent  = '';
+    document.getElementById('statusText').textContent    = T[lang].prompt;
+    document.getElementById('micBtn').disabled           = false;
+    renderDots();
+
+    setTimeout(() => {
+        // Izgovori pitanje i automatski pokreni mikrofon nakon što se audio završi
+        say(T[lang].question, () => {
+            setTimeout(() => {
+                if (!answered && !listening) {
+                    startListen();
+                }
+            }, 500); // Mali delay nakon završetka audio-a
+        });
+    }, 420);
+}
+
+function startRetryMode() {
+    isRetryMode = true;
+    queue = shuffle(mistakeAnimals);
+    qi = 0;
+    
+    // Prikaži poruku o ponavljanju
+    const statusEl = document.getElementById('statusText');
+    const langMsg = lang === 'hr' 
+        ? `🔄 Ponavljamo! Trebam da učiš ove životnje: ${mistakeAnimals.map(a => a.hr).join(', ')}`
+        : `🔄 Retry! Learn these animals: ${mistakeAnimals.map(a => a.en).join(', ')}`;
+    
+    statusEl.textContent = langMsg;
+    statusEl.style.fontSize = '0.95rem';
+    statusEl.style.fontWeight = '600';
+    statusEl.style.color = '#ff6b9d';
+    
+    setTimeout(() => nextAnimal(), 2000);
+}
+
+// ─── Zvjezdice ─────────────────────────────────────────────────────────────
+function awardStar() {
+    starCount++;
+
+    // Jasno prikaži osvajanje zvjezdice u kartici igre.
+    const awardMessage = document.getElementById('starAwardMessage');
+    awardMessage.textContent = lang === 'hr' ? '⭐ Zvjezdica osvojena! ⭐' : '⭐ Star earned! ⭐';
+    awardMessage.classList.remove('show');
+    void awardMessage.offsetWidth;
+    awardMessage.classList.add('show');
+
+    // Leteća zvjezdica od feedback ikone prema brojaču u headeru
+    const feedbackEl = document.getElementById('feedback');
+    const counterEl  = document.getElementById('starCounter');
+    const fRect = feedbackEl.getBoundingClientRect();
+    const cRect = counterEl.getBoundingClientRect();
+
+    const star = document.createElement('div');
+    star.className = 'flying-star';
+    star.textContent = '⭐';
+    star.style.left = (fRect.left + fRect.width/2 - 20) + 'px';
+    star.style.top  = (fRect.top + fRect.height/2 - 20) + 'px';
+    star.style.setProperty('--dx', (cRect.left - fRect.left) + 'px');
+    star.style.setProperty('--dy', (cRect.top - fRect.top) + 'px');
+    document.body.appendChild(star);
+    setTimeout(() => star.remove(), 950);
+
+    // Ažuriraj brojač odmah i naglasi dodanu zvjezdicu.
+    document.getElementById('starCount').textContent = starCount;
+    counterEl.classList.remove('pop');
+    void counterEl.offsetWidth; // restart animacije
+    counterEl.classList.add('pop');
+
+    // Dodaj zvjezdicu u red ispod bodova
+    const row = document.getElementById('starsRow');
+    const s = document.createElement('span');
+    s.textContent = '⭐';
+    row.appendChild(s);
+}
+
+function renderDots() {
+    const el = document.getElementById('attemptsDots');
+    el.innerHTML = '';
+    for (let i = 0; i < MAX_ATTEMPTS; i++) {
+        const d = document.createElement('div');
+        d.className = 'dot' + (i < attempts ? ' wrong' : '');
+        el.appendChild(d);
+    }
+}
+
+// ─── Pomoćne ─────────────────────────────────────────────────────────────────
+function setText(id, txt) { document.getElementById(id + 'Text').textContent = txt; }
+function showWarning(html) {
+    const el = document.getElementById('warningBox');
+    el.innerHTML = html; el.style.display = 'block';
+}
+
+// ─── INICIJALIZACIJA ──────────────────────────────────────────────────────────
+window.speechSynthesis.onvoiceschanged = loadVoices;
+loadVoices();   // za preglednike koji glasove vraćaju odmah
+
+// Provjeri i prikaži progres na početnom ekranu
+function checkProgress() {
+    if (hasProgress()) {
+        const saved = JSON.parse(localStorage.getItem('ucilica_progress'));
+        const homeProgress = document.getElementById('homeProgress');
+        const homeProgressDetails = document.getElementById('homeProgressDetails');
+        const homeStartBtn = document.getElementById('homeStartBtn');
+        homeProgress.style.display = 'block';
+        homeStartBtn.textContent = '🅰️ Učim slušanjem';
+        
+        const levelNames = {1: 'Level 1 (Lako)', 2: 'Level 2 (Teže)', 3: 'Level 3 (Teško)'};
+        const modeName = saved.mode === 'B' ? 'B' : 'A';
+        homeProgressDetails.innerHTML = 
+            `⭐ Zvjezdice: <strong>${saved.starCount}</strong><br>` +
+            `📊 Trenutni level: <strong>${modeName} - ${levelNames[saved.currentLevel]}</strong><br>` +
+            `✅ Riješeno životinja: <strong>${saved.level1Solved.length + saved.level2Solved.length + saved.level3Solved.length}</strong><br>` +
+            `🅰️ Završeno A levela: <strong>${(saved.aDone || []).length}</strong>`;
+    }
+}
+
+// Pozovi pri učitavanju stranice
+checkProgress();
+
+// Povratak na početnu stranicu s uputama
+function goHome() {
+    document.getElementById('aOverlay').classList.remove('open');
+    aToken++;
+    stopListen();
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+    }
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    document.getElementById('settingsPanel').classList.remove('open');
+    document.getElementById('gameContent').style.display = 'none';
+    document.getElementById('homeScreen').style.display = '';
+    checkProgress();
+}
+
+// Igra kreće tek nakon klika na "Start" na početnom ekranu
+function unlockAudio() {
+    try {
+        if (window.speechSynthesis) {
+            const u = new SpeechSynthesisUtterance(' ');
+            u.volume = 0;
+            window.speechSynthesis.speak(u);
+        }
+    } catch(e) {}
+    try {
+        const ctx = getAudioContext();
+        if (ctx && ctx.state === 'suspended') ctx.resume();
+    } catch(e) {}
+    try {
+        const a = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=');
+        a.volume = 0;
+        const pr = a.play();
+        if (pr && pr.catch) pr.catch(() => {});
+    } catch(e) {}
+}
+
+function startGame(requestedMode) {
+    unlockAudio();
+    document.getElementById('homeScreen').style.display = 'none';
+    document.getElementById('gameContent').style.display = '';
+
+    // 📂 UČITAJ PROGRES
+    const hasData = loadProgress();
+    
+    // Ažuriraj dugmad nakon učitavanja progresa
+    if (hasData) {
+        updateLevelButtonLabels();
+    }
+    
+    mode = requestedMode === 'B' && isUnlocked('B', 1) ? 'B' : 'A';
+    if (requestedMode === 'B' && mode === 'A') {
+        alert(lang === 'hr' ? 'Level B se otključava kad riješiš Level 1 u modu A.' : 'Level B unlocks after you finish Level 1 in mode A.');
+    }
+    if (!isUnlocked(mode, currentLevel)) currentLevel = 1;
+
+    // Postavi ispravan level nakon učitavanja
+    setLevel(currentLevel, false);
+    initRecognition();
+
+    if (mode === 'A') {
+        nextAnimal();
+        return;
+    }
+
+    // Traženje dopuštenja za mikrofon (samo jednom, nakon klika na Start)
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                stream.getTracks().forEach(t => t.stop());
+                // Dopuštenje odobreno - kreni s igrom
+                nextAnimal();
+            })
+            .catch(() => {
+                // Dopuštenje odbijeno
+                showWarning(T[lang].noPerm);
+                document.getElementById('micBtn').disabled = true;
+                nextAnimal(); // Kreni ali bez mikrofona
+            });
+    } else {
+        // Preglednik ne podržava getUserMedia
+        nextAnimal();
+    }
+}
+</script>
+</body>
+</html>

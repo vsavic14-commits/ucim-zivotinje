@@ -600,8 +600,7 @@
             cursor: pointer;
             box-shadow: 0 6px 0 #2f9e44;
             transition: transform 0.1s;
-            flex: 1;
-            min-width: 0;
+            width: 100%;
             box-sizing: border-box;
         }
         .home-start-btn:active {
@@ -641,6 +640,46 @@
             transform: translateY(4px);
             box-shadow: 0 2px 0 #2f9e44;
         }
+
+        .mem-screen { display:none; min-height:100vh; flex-direction:column; align-items:center; padding:12px; box-sizing:border-box; background: linear-gradient(135deg, #e3f2fd 0%, #fce4ec 50%, #fff8e1 100%); }
+        .mem-header { display:flex; align-items:center; justify-content:space-between; gap:8px; width:100%; max-width:600px; margin-bottom:10px; }
+        .mem-header button, .mem-levels button, .mem-action { font-family:'Baloo 2', sans-serif; font-weight:700; border:none; border-radius:14px; cursor:pointer; color:white; }
+        .mem-home-btn { background:linear-gradient(135deg,#adb5bd,#868e96); padding:8px 14px; font-size:1rem; }
+        .mem-stars { font-size:1.3rem; font-weight:700; background:white; border-radius:14px; padding:6px 14px; box-shadow:0 2px 8px rgba(0,0,0,0.08); }
+        .mem-lang button { background:#ced4da; padding:8px 10px; font-size:0.95rem; }
+        .mem-lang button.active { background:linear-gradient(135deg,#ffa94d,#f76707); }
+        .mem-levels { display:flex; gap:8px; width:100%; max-width:600px; margin-bottom:8px; }
+        .mem-levels button { flex:1; padding:10px 4px; font-size:1rem; background:linear-gradient(135deg,#ffa94d,#f76707); }
+        .mem-levels button.active { box-shadow:0 0 0 4px #ffd43b; }
+        .mem-levels button.locked { background:#adb5bd; }
+        .mem-info { font-size:1.05rem; font-weight:600; color:#495057; margin:4px 0 10px; text-align:center; min-height:1.4em; }
+        .mem-grid { display:grid; gap:8px; width:100%; max-width:600px; }
+        .mem-card { position:relative; aspect-ratio:1; perspective:600px; cursor:pointer; }
+        .mem-inner { position:absolute; inset:0; transition:transform 0.4s; transform-style:preserve-3d; }
+        .mem-card.flipped .mem-inner, .mem-card.matched .mem-inner { transform:rotateY(180deg); }
+        .mem-face { position:absolute; inset:0; border-radius:14px; backface-visibility:hidden; -webkit-backface-visibility:hidden; overflow:hidden; display:flex; align-items:center; justify-content:center; }
+        .mem-back { background:linear-gradient(135deg,#9775fa,#6741d9); font-size:2.2rem; box-shadow:0 3px 8px rgba(103,65,217,0.25); }
+        .mem-front { background:white; transform:rotateY(180deg); box-shadow:0 3px 8px rgba(0,0,0,0.15); }
+        .mem-card.matched .mem-front { box-shadow:0 0 0 4px #51cf66; }
+        .mem-front img { width:100%; height:100%; object-fit:cover; }
+        .mem-name { position:absolute; left:0; right:0; bottom:0; background:rgba(0,0,0,0.55); color:white; font-weight:700; font-size:0.85rem; text-align:center; padding:2px 0; }
+        .mem-win { display:none; margin-top:14px; background:white; border:3px solid #ffd43b; border-radius:18px; padding:14px 18px; text-align:center; width:100%; max-width:600px; box-sizing:border-box; }
+        .mem-win .mem-title { font-size:1.4rem; font-weight:700; margin-bottom:8px; }
+        .mem-action { padding:10px 18px; font-size:1.05rem; margin:4px; background:linear-gradient(135deg,#51cf66,#37b24d); }
+
+        .fnd-screen { display:none; min-height:100vh; flex-direction:column; align-items:center; padding:12px; box-sizing:border-box; background: linear-gradient(135deg, #e3f2fd 0%, #fce4ec 50%, #fff8e1 100%); }
+        .fnd-task { display:flex; align-items:center; justify-content:center; gap:10px; width:100%; max-width:600px; background:white; border-radius:18px; padding:12px 14px; box-sizing:border-box; box-shadow:0 2px 8px rgba(0,0,0,0.08); margin-bottom:12px; }
+        .fnd-task-text { font-size:1.5rem; font-weight:700; color:#364fc7; text-align:center; }
+        .fnd-task button { font-family:'Baloo 2', sans-serif; font-size:1.3rem; border:none; border-radius:12px; padding:6px 12px; cursor:pointer; background:linear-gradient(135deg,#4dabf7,#1c7ed6); color:white; }
+        .fnd-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; width:100%; max-width:600px; }
+        .fnd-opt { position:relative; cursor:pointer; border-radius:14px; overflow:hidden; box-shadow:0 3px 8px rgba(0,0,0,0.15); background:white; border:4px solid transparent; box-sizing:border-box; }
+        .fnd-opt img { display:block; width:100%; aspect-ratio:4 / 3; object-fit:cover; }
+        .fnd-opt.wrong { opacity:0.35; animation:fndShake 0.4s; pointer-events:none; }
+        .fnd-opt.right { border-color:#51cf66; box-shadow:0 0 0 3px #51cf66; }
+        .fnd-opt.right::after { content:'✅'; position:absolute; top:4px; right:6px; font-size:1.6rem; }
+        .fnd-opt.hint { border-color:#51cf66; box-shadow:0 0 0 4px #51cf66; animation:fndPulse 0.8s infinite; }
+        @keyframes fndShake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+        @keyframes fndPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.04)} }
     </style>
 </head>
 <body>
@@ -667,10 +706,11 @@
         <div id="homeProgressDetails" style="font-size: 0.95rem; color: #555;">
         </div>
     </div>
-    <div style="display: flex; gap: 12px; width: 100%; max-width: 480px; box-sizing: border-box;">
+    <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 480px; box-sizing: border-box;">
         <button class="home-start-btn" id="homeStartBtn" onclick="startGame('A')">🅰️ Učim slušanjem</button>
         <button class="home-start-btn" id="homeStartBtnB" onclick="startGame('B')" style="background: linear-gradient(135deg, #4dabf7, #1c7ed6); box-shadow: 0 6px 0 #1864ab;">🅱️ Učim govorom</button>
-        <style>.home-start-btn#homeStartBtnB{flex:1}</style>
+        <button class="home-start-btn" id="homeStartBtnM" onclick="startMemory()" style="background: linear-gradient(135deg, #ffa94d, #f76707); box-shadow: 0 6px 0 #d9480f;">🧩 Igram pamćenjem</button>
+        <button class="home-start-btn" id="homeStartBtnF" onclick="startFind()" style="background: linear-gradient(135deg, #cc5de8, #9c36b5); box-shadow: 0 6px 0 #862e9c;">🔍 Pronađi životinju</button>
     </div>
 </div>
 
@@ -789,6 +829,56 @@
 </div>
 </div>
 
+<div class="mem-screen" id="memScreen">
+    <div class="mem-header">
+        <button class="mem-home-btn" onclick="goHome()">🏠</button>
+        <div class="mem-stars">⭐ <span id="memStarCount">0</span></div>
+        <div class="mem-lang">
+            <button id="memLangHr" class="active" onclick="memSetLang('hr')">🇭🇷 HR</button>
+            <button id="memLangEn" onclick="memSetLang('en')">🇬🇧 EN</button>
+        </div>
+    </div>
+    <div class="mem-levels">
+        <button id="memLevelBtn1" onclick="memSetLevel(1)"></button>
+        <button id="memLevelBtn2" onclick="memSetLevel(2)"></button>
+        <button id="memLevelBtn3" onclick="memSetLevel(3)"></button>
+    </div>
+    <div class="mem-info" id="memInfo"></div>
+    <div class="mem-grid" id="memGrid"></div>
+    <div class="mem-win" id="memWin">
+        <div class="mem-title" id="memWinTitle"></div>
+        <button class="mem-action" id="memAgainBtn" onclick="memStart()"></button>
+        <button class="mem-action" id="memNextBtn" onclick="memSetLevel(memLevel + 1)"></button>
+    </div>
+</div>
+
+<div class="fnd-screen" id="fndScreen">
+    <div class="mem-header">
+        <button class="mem-home-btn" onclick="goHome()">🏠</button>
+        <div class="mem-stars">⭐ <span id="fndStarCount">0</span></div>
+        <div class="mem-lang">
+            <button id="fndLangHr" class="active" onclick="fndSetLang('hr')">🇭🇷 HR</button>
+            <button id="fndLangEn" onclick="fndSetLang('en')">🇬🇧 EN</button>
+        </div>
+    </div>
+    <div class="mem-levels">
+        <button id="fndLevelBtn1" onclick="fndSetLevel(1)"></button>
+        <button id="fndLevelBtn2" onclick="fndSetLevel(2)"></button>
+        <button id="fndLevelBtn3" onclick="fndSetLevel(3)"></button>
+    </div>
+    <div class="mem-info" id="fndInfo"></div>
+    <div class="fnd-task" id="fndTask">
+        <div class="fnd-task-text" id="fndTaskText"></div>
+        <button onclick="fndSayTask()">🔊</button>
+    </div>
+    <div class="fnd-grid" id="fndGrid"></div>
+    <div class="mem-win" id="fndWin">
+        <div class="mem-title" id="fndWinTitle"></div>
+        <button class="mem-action" id="fndAgainBtn" onclick="fndStart()"></button>
+        <button class="mem-action" id="fndNextBtn" onclick="fndSetLevel(fndLevel + 1)"></button>
+    </div>
+</div>
+
 <script>
 // ─── Životinje ───────────────────────────────────────────────────────────────
 // Level 1 - Lako: domaće životinje (6 komada)
@@ -798,20 +888,26 @@ const ANIMALS_LEVEL1 = [
     { hr:'riba',  en:'fish',   img:'images/fish.jpg',  alts_hr:['ribu','ribi','ribica','ribče','ribe'],                       alts_en:['fishy','fishes'], level:1 },
     { hr:'ptica', en:'bird',   img:'images/bird.jpg',  alts_hr:['pticu','ptici','ptičica','ptico','ptic','ptica','птица','птичица'],     alts_en:['birdie','birdy','tweet'], level:1 },
     { hr:'krava', en:'cow',    img:'images/cow.jpg',  alts_hr:['kravu','kravi','kravice','kravica','mu', 'kava'],                    alts_en:['cattle','bull','calf','moo'], level:1 },
-    { hr:'svinja', en:'pig',   img:'images/pig.jpg',  alts_hr:['svinju','svinji','prasac','prase','praščić','rok rok','oink'],     alts_en:['piggy','piglet','hog','swine','oink'], level:1 }
+    { hr:'svinja', en:'pig',   img:'images/pig.jpg',  alts_hr:['svinju','svinji','prasac','prase','praščić','rok rok','oink'],     alts_en:['piggy','piglet','hog','swine','oink'], level:1 },
+    { hr:'ovca',  en:'sheep',  img:'images/sheep.jpg',  alts_hr:['ovcu','ovci','ovčica','janje','ovce','beee','be be'],     alts_en:['lamb','ram','baa','sheeps'], level:1 },
+    { hr:'koza',  en:'goat',   img:'images/goat.jpg',  alts_hr:['kozu','kozi','kozica','kozić','koze','jare','me me'],     alts_en:['goats','billy goat','kid','meh'], level:1 }
 ];
 
-// Level 2 - Srednje: farma + vrt (6 komada)
+// Level 2 - Srednje: farma + vrt (10 komada)
 const ANIMALS_LEVEL2 = [
     { hr:'zec',   en:'rabbit', img:'images/rabbit.jpg',  alts_hr:['zeca','zecu','kunić','kuniću','zeče','zunic','zeko','zečić'],alts_en:['bunny','hare','bun'], level:2 },
     { hr:'konj',  en:'horse',  img:'images/horse.jpg',  alts_hr:['konja','konju','kobila','konjić','horse'],                     alts_en:['pony','stallion','mare','horsie'], level:2 },
     { hr:'patka', en:'duck',   img:'images/duck.jpg',  alts_hr:['patku','patki','patak','pače','kva kva','quack'],     alts_en:['duckling','mallard','quack'], level:2 },
     { hr:'pčela',  en:'bee',    img:'images/bee.jpg',  alts_hr:['pčelu','pčeli','pčelica','pcela','buba','bzz','zum zum'],     alts_en:['bumblebee','honeybee','buzz'], level:2 },
     { hr:'leptir', en:'butterfly', img:'images/butterfly.jpg',  alts_hr:['leptira','leptiru','leptirić','leptir','leptiric'],     alts_en:['butterflies','moth'], level:2 },
-    { hr:'kokoš', en:'chicken', img:'images/chicken.jpg',  alts_hr:['kokoši','kokošku','kokica','pile','piletina','kok kok','ko ko'],     alts_en:['hen','chick','rooster','cluck'], level:2 }
+    { hr:'kokoš', en:'chicken', img:'images/chicken.jpg',  alts_hr:['kokoši','kokošku','kokica','pile','piletina','kok kok','ko ko'],     alts_en:['hen','chick','rooster','cluck'], level:2 },
+    { hr:'magarac', en:'donkey', img:'images/donkey.jpg', alts_hr:['magarca','magarcu','magarče','magarići','magaric','magarcic'], alts_en:['donkeys','burro','ass','donkie'], level:2 },
+    { hr:'miš', en:'mouse', img:'images/mouse.jpg', alts_hr:['miša','mišu','mišić','mis','misic','miševi','mišek'], alts_en:['mice','mousy','mouses','rat'], level:2 },
+    { hr:'kornjača', en:'turtle', img:'images/turtle.jpg', alts_hr:['kornjaču','kornjači','kornjačica','kornjaca','kornjacu','kornjace'], alts_en:['turtles','tortoise','terrapin'], level:2 },
+    { hr:'žaba', en:'frog', img:'images/frog.jpg', alts_hr:['žabu','žabi','žabica','žabac','zaba','zabu','žabe'], alts_en:['frogs','froggy','toad','froggie'], level:2 }
 ];
 
-// Level 3 - Teško: egzotične/divlje životinje (8 komada)
+// Level 3 - Teško: egzotične/divlje životinje (12 komada)
 const ANIMALS_LEVEL3 = [
     { hr:'lav',   en:'lion',   img:'images/lion.jpg',  alts_hr:['lava','lavu','lavica','lavić','rey','rawr'],     alts_en:['lioness','cub','roar'], level:3 },
     { hr:'slon',  en:'elephant', img:'images/elephant.jpg',  alts_hr:['slona','slonu','slonić','slonica','slonje'],     alts_en:['elephants','jumbo','dumbo','ellie'], level:3 },
@@ -820,7 +916,11 @@ const ANIMALS_LEVEL3 = [
     { hr:'žirafa', en:'giraffe', img:'images/giraffe.jpg',  alts_hr:['žirafu','žirafi','žirafić','girafa','dzirafa'],     alts_en:['baby giraffe'], level:3 },
     { hr:'dupin',  en:'dolphin', img:'images/dolphin.jpg',  alts_hr:['dupina','dupinu','dupinčić','delfin','delfina'],     alts_en:['dolphins','flipper','porpoise'], level:3 },
     { hr:'vuk', en:'wolf', img:'images/woolf.jpg', alts_hr:['vuka','vuku','vuče','vučić','vučića','vučica','vučicu','vukovi'], alts_en:['wolves','wolf cub','wolf pup'], level:3 },
-    { hr:'zebra', en:'zebra', img:'images/zebra.jpg', alts_hr:['zebru','zebri','zebrice','zebrica'], alts_en:['zebras'], level:3 }
+    { hr:'zebra', en:'zebra', img:'images/zebra.jpg', alts_hr:['zebru','zebri','zebrice','zebrica'], alts_en:['zebras'], level:3 },
+    { hr:'tigar', en:'tiger', img:'images/tiger.jpg', alts_hr:['tigra','tigru','tigrić','tigrica','tigar','tigrovi'], alts_en:['tigers','tigger','tigress'], level:3 },
+    { hr:'nosorog', en:'rhino', img:'images/rhino.jpg', alts_hr:['nosoroga','nosorogu','nosorožić','nosorog','nosorozi'], alts_en:['rhinoceros','rhinos','rino','rhyno'], level:3 },
+    { hr:'krokodil', en:'crocodile', img:'images/crocodile.jpg', alts_hr:['krokodila','krokodilu','krokodilić','krokodil','krokodili','aligator'], alts_en:['crocodiles','alligator','croc','crocs','gator'], level:3 },
+    { hr:'pingvin', en:'penguin', img:'images/penguin.jpg', alts_hr:['pingvina','pingvinu','pingvinić','pingvini','pingvin'], alts_en:['penguins','pinguin','pengwin'], level:3 }
 ];
 
 let ANIMALS = ANIMALS_LEVEL1; // Početno level 1
@@ -896,8 +996,11 @@ const SOUNDS = {
     chicken:{hr:'kokodak kokodak',en:'cluck cluck'}, rabbit:{hr:'tup tup tup',en:'thump thump'}, horse:{hr:'ihaha ihaha',en:'neigh neigh'},
     duck:{hr:'kva kva',en:'quack quack'}, bee:{hr:'bzzz bzzz',en:'bzzz bzzz'}, butterfly:{hr:'frrr frrr',en:'flap flap'},
     lion:{hr:'rrraaar',en:'roooaar'}, elephant:{hr:'tooot tooot',en:'toot toot'}, bear:{hr:'grrr grrr',en:'grrr grrr'},
-    monkey:{hr:'u u a a',en:'ooh ooh aah aah'}, giraffe:{hr:'hmm hmm',en:'hmm hmm'}, dolphin:{hr:'ik ik ik',en:'eek eek eek'},
-    wolf:{hr:'auuuu auuuu',en:'awooo awooo'}, zebra:{hr:'ihaha ihaha',en:'neigh neigh'}
+    monkey:{hr:'',en:''}, giraffe:{hr:'hmm hmm',en:'hmm hmm'}, dolphin:{hr:'ik ik ik',en:'eek eek eek'},
+    wolf:{hr:'auuuu auuuu',en:'awooo awooo'}, zebra:{hr:'ihaha ihaha',en:'neigh neigh'},
+    sheep:{hr:'beee beee',en:'baa baa'}, goat:{hr:'meee meee',en:'meh meh'}, donkey:{hr:'ia ia',en:'hee haw'},
+    mouse:{hr:'cik cik',en:'squeak squeak'}, turtle:{hr:'',en:''}, frog:{hr:'kre kre',en:'ribbit ribbit'},
+    tiger:{hr:'rrraaar',en:'roooaar'}, rhino:{hr:'frrr frrr',en:'snort snort'}, crocodile:{hr:'grrr grrr',en:'grrr grrr'}, penguin:{hr:'ga ga ga',en:'honk honk'}
 };
 
 // TTS postavke
@@ -957,6 +1060,8 @@ function loadProgress() {
 function resetProgress() {
     if (confirm('Jeste li sigurni da želite resetirati sav progres? Izgubit ćete sve zvjezdice i napredak!')) {
         localStorage.removeItem('ucilica_progress');
+        localStorage.removeItem('ucilica_memory');
+        localStorage.removeItem('ucilica_find');
         location.reload(); // Osvježi stranicu
     }
 }
@@ -1215,11 +1320,24 @@ function playAnimalSound(a, done) {
     const fallback = once(() => say(sound, done));
     const finish = once(done);
     try {
-        const audio = new Audio('sounds/' + a.en + '.mp3');
-        currentAudio = audio;
-        audio.onended = finish;
-        audio.onerror = fallback;
-        audio.play().catch(fallback);
+        const playSound = () => {
+            const audio = new Audio('sounds/' + a.en + '.mp3');
+            currentAudio = audio;
+            audio.onended = finish;
+            audio.onerror = fallback;
+            audio.play().catch(fallback);
+        };
+        if (a.en === 'fish') {
+            const fishAudio = new Audio('sounds/fish.mp3');
+            currentAudio = fishAudio;
+            fishAudio.onended = () => {
+                if (currentAudio === fishAudio) playSound();
+            };
+            fishAudio.onerror = fallback;
+            fishAudio.play().catch(fallback);
+        } else {
+            playSound();
+        }
     } catch (e) {
         fallback();
     }
@@ -1992,8 +2110,368 @@ function checkProgress() {
 // Pozovi pri učitavanju stranice
 checkProgress();
 
+
+// ─── MEMORY ──────────────────────────────────────────────────────────────────
+const MEM_PAIRS = { 1: 6, 2: 8, 3: 10 };
+const MEM_COLS  = { 1: 3, 2: 4, 3: 4 };
+const MEM_TXT = {
+    hr: { levels: ['Lako', 'Srednje', 'Teško'], pairs: 'Pronađi parove', found: 'Pronađeno', win: 'Bravo! Level riješen! ⭐', again: '🔄 Igraj ponovo', next: '➡️ Sljedeći level', locked: '🔒 Prvo riješi prethodni level', say: 'Bravo! Riješio si level!' },
+    en: { levels: ['Easy', 'Medium', 'Hard'], pairs: 'Find the pairs', found: 'Found', win: 'Well done! Level complete! ⭐', again: '🔄 Play again', next: '➡️ Next level', locked: '🔒 Finish the previous level first', say: 'Well done! You solved the level!' }
+};
+let memLevel = 1;
+let memStars = 0;
+let memDone = new Set();
+let memFirst = null;
+let memLock = false;
+let memMatched = 0;
+let memTotal = 0;
+let memTimer = null;
+
+function memLoad() {
+    try {
+        const d = JSON.parse(localStorage.getItem('ucilica_memory') || '{}');
+        memStars = d.stars || 0;
+        memDone = new Set(d.done || []);
+    } catch (e) { memStars = 0; memDone = new Set(); }
+}
+function memSave() {
+    localStorage.setItem('ucilica_memory', JSON.stringify({ stars: memStars, done: Array.from(memDone) }));
+}
+function memOpen(n) { return n === 1 || memDone.has(n - 1); }
+
+function memPool(level) {
+    if (level === 1) return ANIMALS_LEVEL1;
+    if (level === 2) return ANIMALS_LEVEL1.concat(ANIMALS_LEVEL2);
+    return ANIMALS_LEVEL1.concat(ANIMALS_LEVEL2, ANIMALS_LEVEL3);
+}
+
+function memLabels() {
+    const t = MEM_TXT[lang];
+    for (let n = 1; n <= 3; n++) {
+        const b = document.getElementById('memLevelBtn' + n);
+        const open = memOpen(n);
+        b.textContent = (open ? '⭐'.repeat(n) : '🔒') + ' Level ' + n + ' - ' + t.levels[n - 1];
+        b.classList.toggle('locked', !open);
+        b.classList.toggle('active', n === memLevel);
+    }
+    document.getElementById('memStarCount').textContent = memStars;
+    document.getElementById('memLangHr').classList.toggle('active', lang === 'hr');
+    document.getElementById('memLangEn').classList.toggle('active', lang === 'en');
+    document.getElementById('memAgainBtn').textContent = t.again;
+    document.getElementById('memNextBtn').textContent = t.next;
+    memInfo();
+}
+
+function memInfo() {
+    const t = MEM_TXT[lang];
+    document.getElementById('memInfo').textContent = '🧩 ' + t.pairs + ' (' + t.found + ' ' + memMatched + '/' + memTotal + ')';
+}
+
+function memSetLang(l) {
+    lang = l;
+    if (l === 'en') loadVoices();
+    memLabels();
+    document.querySelectorAll('.mem-name').forEach(el => {
+        const a = ANIMALS_LEVEL1.concat(ANIMALS_LEVEL2, ANIMALS_LEVEL3).find(x => x.en === el.dataset.en);
+        if (a) el.textContent = lang === 'hr' ? a.hr : a.en;
+    });
+}
+
+function memSetLevel(n) {
+    if (n > 3) return;
+    if (!memOpen(n)) {
+        document.getElementById('memInfo').textContent = MEM_TXT[lang].locked;
+        return;
+    }
+    memLevel = n;
+    memStart();
+}
+
+function memStart() {
+    clearTimeout(memTimer);
+    stopAudioNow();
+    memFirst = null;
+    memLock = false;
+    memMatched = 0;
+    const pairs = MEM_PAIRS[memLevel];
+    memTotal = pairs;
+    const chosen = shuffle(memPool(memLevel)).slice(0, pairs);
+    const cards = shuffle(chosen.concat(chosen));
+    const grid = document.getElementById('memGrid');
+    grid.style.gridTemplateColumns = 'repeat(' + MEM_COLS[memLevel] + ', 1fr)';
+    grid.innerHTML = '';
+    cards.forEach(a => {
+        const c = document.createElement('div');
+        c.className = 'mem-card';
+        c.dataset.en = a.en;
+        const name = memLevel === 1 ? '<div class="mem-name" data-en="' + a.en + '">' + (lang === 'hr' ? a.hr : a.en) + '</div>' : '';
+        c.innerHTML = '<div class="mem-inner"><div class="mem-face mem-back">🐾</div><div class="mem-face mem-front"><img src="' + a.img + '" alt="">' + name + '</div></div>';
+        c.onclick = () => memFlip(c, a);
+        grid.appendChild(c);
+    });
+    document.getElementById('memWin').style.display = 'none';
+    memLabels();
+}
+
+function memFlip(card, a) {
+    if (memLock || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+    card.classList.add('flipped');
+    if (!memFirst) { memFirst = card; return; }
+    const first = memFirst;
+    memFirst = null;
+    if (first.dataset.en === card.dataset.en) {
+        first.classList.add('matched'); card.classList.add('matched');
+        first.classList.remove('flipped'); card.classList.remove('flipped');
+        memMatched++;
+        memInfo();
+        stopAudioNow();
+        if (memMatched === memTotal) {
+            say(lang === 'hr' ? a.hr : a.en, () => say(MEM_TXT[lang].say));
+            memWin();
+        } else {
+            say(lang === 'hr' ? a.hr : a.en);
+        }
+    } else {
+        memLock = true;
+        memTimer = setTimeout(() => {
+            first.classList.remove('flipped');
+            card.classList.remove('flipped');
+            memLock = false;
+        }, 2000);
+    }
+}
+
+function memWin() {
+    memStars++;
+    memDone.add(memLevel);
+    memSave();
+    memLabels();
+    document.getElementById('memWinTitle').textContent = MEM_TXT[lang].win;
+    document.getElementById('memNextBtn').style.display = memLevel < 3 ? '' : 'none';
+    const w = document.getElementById('memWin');
+    w.style.display = 'block';
+    w.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function startMemory() {
+    unlockAudio();
+    memLoad();
+    document.getElementById('homeScreen').style.display = 'none';
+    document.getElementById('gameContent').style.display = 'none';
+    document.getElementById('memScreen').style.display = 'flex';
+    memLevel = memOpen(memLevel) ? memLevel : 1;
+    memStart();
+}
+
+
+// ─── PRONAĐI ŽIVOTINJU ───────────────────────────────────────────────────────
+const FND_OPTIONS = { 1: 3, 2: 6, 3: 9 };
+const FND_QUESTIONS = 6;
+const FND_TRIES = 3;
+const FND_TXT = {
+    hr: { levels: ['Lako', 'Srednje', 'Teško'], find: 'Pronađi', info: 'Pitanje', again: '🔄 Igraj ponovo', next: '➡️ Sljedeći level', locked: '🔒 Prvo riješi prethodni level', win: 'Bravo! Level riješen! ⭐', lose: 'Nije prošlo, probaj ponovo! 💪', sayWin: 'Bravo! Riješio si level!', sayLose: 'Nije prošlo. Probaj ponovo!', retry: 'Pokušaj ponovo', again2: 'Još jednom, pokušaj opet!', help: 'Evo, ovdje je' },
+    en: { levels: ['Easy', 'Medium', 'Hard'], find: 'Find', info: 'Question', again: '🔄 Play again', next: '➡️ Next level', locked: '🔒 Finish the previous level first', win: 'Well done! Level complete! ⭐', lose: 'Not passed, try again! 💪', sayWin: 'Well done! You solved the level!', sayLose: 'Not passed. Try again!', retry: 'Try again', again2: 'One more time, try again!', help: 'Here it is' }
+};
+let fndLevel = 1;
+let fndStars = 0;
+let fndDone = new Set();
+let fndQuestions = [];
+let fndIdx = 0;
+let fndTarget = null;
+let fndTries = 0;
+let fndRound = 1;
+let fndLock = false;
+let fndHelp = false;
+let fndTimer = null;
+let fndToken = 0;
+
+function fndLoad() {
+    try {
+        const d = JSON.parse(localStorage.getItem('ucilica_find') || '{}');
+        fndStars = d.stars || 0;
+        fndDone = new Set(d.done || []);
+    } catch (e) { fndStars = 0; fndDone = new Set(); }
+}
+function fndSave() {
+    localStorage.setItem('ucilica_find', JSON.stringify({ stars: fndStars, done: Array.from(fndDone) }));
+}
+function fndOpen(n) { return n === 1 || fndDone.has(n - 1); }
+function fndName(a) { return lang === 'hr' ? a.hr : a.en; }
+function fndTaskSpeech() {
+    return lang === 'hr' ? 'Pronađi životinju: ' + fndTarget.hr : 'Find the ' + fndTarget.en;
+}
+
+function fndLabels() {
+    const t = FND_TXT[lang];
+    for (let n = 1; n <= 3; n++) {
+        const b = document.getElementById('fndLevelBtn' + n);
+        const open = fndOpen(n);
+        b.textContent = (open ? '⭐'.repeat(n) : '🔒') + ' Level ' + n + ' - ' + t.levels[n - 1];
+        b.classList.toggle('locked', !open);
+        b.classList.toggle('active', n === fndLevel);
+    }
+    document.getElementById('fndStarCount').textContent = fndStars;
+    document.getElementById('fndLangHr').classList.toggle('active', lang === 'hr');
+    document.getElementById('fndLangEn').classList.toggle('active', lang === 'en');
+    document.getElementById('fndAgainBtn').textContent = t.again;
+    document.getElementById('fndNextBtn').textContent = t.next;
+    if (fndTarget) {
+        document.getElementById('fndTaskText').textContent = t.find + ': ' + fndName(fndTarget);
+        document.getElementById('fndInfo').textContent = '🔍 ' + t.info + ' ' + (fndIdx + 1) + '/' + FND_QUESTIONS;
+    }
+}
+
+function fndSetLang(l) {
+    lang = l;
+    if (l === 'en') loadVoices();
+    fndLabels();
+}
+
+function fndSetLevel(n) {
+    if (n > 3) return;
+    if (!fndOpen(n)) {
+        document.getElementById('fndInfo').textContent = FND_TXT[lang].locked;
+        return;
+    }
+    fndLevel = n;
+    fndStart();
+}
+
+function fndPool() {
+    if (fndLevel === 1) return ANIMALS_LEVEL1;
+    if (fndLevel === 2) return ANIMALS_LEVEL1.concat(ANIMALS_LEVEL2);
+    return ANIMALS_LEVEL1.concat(ANIMALS_LEVEL2, ANIMALS_LEVEL3);
+}
+
+function fndStart() {
+    fndToken++;
+    clearTimeout(fndTimer);
+    stopAudioNow();
+    fndQuestions = shuffle(fndPool()).slice(0, FND_QUESTIONS);
+    fndIdx = 0;
+    document.getElementById('fndWin').style.display = 'none';
+    document.getElementById('fndTask').style.display = '';
+    document.getElementById('fndGrid').style.display = '';
+    fndAsk();
+}
+
+function fndAsk() {
+    fndTarget = fndQuestions[fndIdx];
+    fndTries = 0;
+    fndRound = 1;
+    fndLock = false;
+    fndHelp = false;
+    const pool = fndPool().filter(a => a.en !== fndTarget.en);
+    const opts = shuffle([fndTarget].concat(shuffle(pool).slice(0, FND_OPTIONS[fndLevel] - 1)));
+    const grid = document.getElementById('fndGrid');
+    grid.innerHTML = '';
+    opts.forEach(a => {
+        const d = document.createElement('div');
+        d.className = 'fnd-opt';
+        d.dataset.en = a.en;
+        d.innerHTML = '<img src="' + a.img + '" alt="">';
+        d.onclick = () => fndPick(d, a);
+        grid.appendChild(d);
+    });
+    fndLabels();
+    fndSayTask();
+}
+
+function fndSayTask() {
+    if (!fndTarget) return;
+    stopAudioNow();
+    say(fndTaskSpeech());
+}
+
+function fndPick(el, a) {
+    if (fndLock || el.classList.contains('wrong') || el.classList.contains('right')) return;
+    if (a.en === fndTarget.en) {
+        fndLock = true;
+        document.querySelectorAll('.fnd-opt').forEach(o => o.classList.remove('hint'));
+        el.classList.add('right');
+        stopAudioNow();
+        const t = ++fndToken;
+        playAnimalSound(a, () => {
+            if (t !== fndToken) return;
+            fndTimer = setTimeout(fndNext, 700);
+        });
+        return;
+    }
+    el.classList.add('wrong');
+    fndTries++;
+    if (fndTries < FND_TRIES) return;
+    if (fndLevel !== 1) {
+        fndLock = true;
+        fndTries = 0;
+        stopAudioNow();
+        say(FND_TXT[lang].retry, () => {
+            document.querySelectorAll('.fnd-opt.wrong').forEach(o => o.classList.remove('wrong'));
+            fndLock = false;
+        });
+        return;
+    }
+    if (fndRound === 1) {
+        fndRound = 2;
+        fndTries = 0;
+        stopAudioNow();
+        say(FND_TXT[lang].again2, () => {
+            document.querySelectorAll('.fnd-opt.wrong').forEach(o => o.classList.remove('wrong'));
+            fndSayTask();
+        });
+        return;
+    }
+    fndHelp = true;
+    document.querySelectorAll('.fnd-opt').forEach(o => {
+        if (o.dataset.en === fndTarget.en) o.classList.add('hint');
+        else o.classList.add('wrong');
+    });
+    stopAudioNow();
+    say(FND_TXT[lang].help + ' ' + fndName(fndTarget));
+}
+
+function fndNext() {
+    fndIdx++;
+    if (fndIdx >= FND_QUESTIONS) { fndWin(); return; }
+    fndAsk();
+}
+
+function fndWin() {
+    fndStars++;
+    fndDone.add(fndLevel);
+    fndSave();
+    fndLabels();
+    fndShowEnd(FND_TXT[lang].win, FND_TXT[lang].sayWin, fndLevel < 3);
+}
+
+function fndShowEnd(title, speech, showNext) {
+    document.getElementById('fndTask').style.display = 'none';
+    document.getElementById('fndGrid').style.display = 'none';
+    document.getElementById('fndInfo').textContent = '';
+    document.getElementById('fndWinTitle').textContent = title;
+    document.getElementById('fndNextBtn').style.display = showNext ? '' : 'none';
+    document.getElementById('fndWin').style.display = 'block';
+    stopAudioNow();
+    say(speech);
+}
+
+function startFind() {
+    unlockAudio();
+    fndLoad();
+    document.getElementById('homeScreen').style.display = 'none';
+    document.getElementById('gameContent').style.display = 'none';
+    document.getElementById('memScreen').style.display = 'none';
+    document.getElementById('fndScreen').style.display = 'flex';
+    fndLevel = fndOpen(fndLevel) ? fndLevel : 1;
+    fndStart();
+}
+
 // Povratak na početnu stranicu s uputama
 function goHome() {
+    fndToken++;
+    clearTimeout(fndTimer);
+    document.getElementById('fndScreen').style.display = 'none';
+    clearTimeout(memTimer);
+    document.getElementById('memScreen').style.display = 'none';
     document.getElementById('aOverlay').classList.remove('open');
     aToken++;
     stopListen();
