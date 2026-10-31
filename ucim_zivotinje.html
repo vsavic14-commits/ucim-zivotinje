@@ -2114,6 +2114,7 @@ checkProgress();
 // ─── MEMORY ──────────────────────────────────────────────────────────────────
 const MEM_PAIRS = { 1: 6, 2: 8, 3: 10 };
 const MEM_COLS  = { 1: 3, 2: 4, 3: 4 };
+const MEM_MAXW  = { 1: 540, 2: 720, 3: 720 };
 const MEM_TXT = {
     hr: { levels: ['Lako', 'Srednje', 'Teško'], pairs: 'Pronađi parove', found: 'Pronađeno', win: 'Bravo! Level riješen! ⭐', again: '🔄 Igraj ponovo', next: '➡️ Sljedeći level', locked: '🔒 Prvo riješi prethodni level', say: 'Bravo! Riješio si level!' },
     en: { levels: ['Easy', 'Medium', 'Hard'], pairs: 'Find the pairs', found: 'Found', win: 'Well done! Level complete! ⭐', again: '🔄 Play again', next: '➡️ Next level', locked: '🔒 Finish the previous level first', say: 'Well done! You solved the level!' }
@@ -2199,6 +2200,7 @@ function memStart() {
     const cards = shuffle(chosen.concat(chosen));
     const grid = document.getElementById('memGrid');
     grid.style.gridTemplateColumns = 'repeat(' + MEM_COLS[memLevel] + ', 1fr)';
+    grid.style.maxWidth = MEM_MAXW[memLevel] + 'px';
     grid.innerHTML = '';
     cards.forEach(a => {
         const c = document.createElement('div');
@@ -2266,6 +2268,8 @@ function startMemory() {
 
 // ─── PRONAĐI ŽIVOTINJU ───────────────────────────────────────────────────────
 const FND_OPTIONS = { 1: 3, 2: 6, 3: 9 };
+const FND_COLS = { 1: 3, 2: 2, 3: 3 };
+const FND_MAXW = { 1: 540, 2: 480, 3: 720 };
 const FND_QUESTIONS = 6;
 const FND_TRIES = 3;
 const FND_TXT = {
@@ -2364,6 +2368,8 @@ function fndAsk() {
     const pool = fndPool().filter(a => a.en !== fndTarget.en);
     const opts = shuffle([fndTarget].concat(shuffle(pool).slice(0, FND_OPTIONS[fndLevel] - 1)));
     const grid = document.getElementById('fndGrid');
+    grid.style.gridTemplateColumns = 'repeat(' + FND_COLS[fndLevel] + ', 1fr)';
+    grid.style.maxWidth = FND_MAXW[fndLevel] + 'px';
     grid.innerHTML = '';
     opts.forEach(a => {
         const d = document.createElement('div');
